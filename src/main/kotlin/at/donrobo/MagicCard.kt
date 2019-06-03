@@ -58,10 +58,31 @@ enum class CardColor {
     }
 }
 
+sealed class Cost
+object WhiteCost : Cost()
+object GreenCost : Cost()
+object BlueCost : Cost()
+object BlackCost : Cost()
+object RedCost : Cost()
+class GenericCost(val number: Int) : Cost()
+object XCost : Cost()
+object YCost : Cost()
+object ZCost : Cost()
+object SnowCost : Cost()
+object ColorlessCost : Cost()
+class CombinedCost(val cost1: Cost, val cost2: Cost) : Cost()
+class HalfCost(val cost: Cost) : Cost()
+object PhyrexianCost : Cost()
+
 data class MagicCard(
     val originalName: String,
     val name: String,
     val types: List<CardType>,
     val language: Language,
-    val colors: List<CardColor>
+    val colors: List<CardColor>,
+    val text: String?,
+    val typeText: String,
+    val cost: List<Cost>,
+    val power: Int?,
+    val toughness: Int?
 )

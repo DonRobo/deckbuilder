@@ -8,7 +8,7 @@ class DeckbuilderControl(cardLoader: CardLoader) {
 
     val canvas = Canvas()
     private val gc get() = canvas.graphicsContext2D
-    private val magicCard = MagicCardPainter(cardLoader.getCard("Wildgrowth Walker"))
+    private val magicCard = MagicCardPainter(cardLoader.getCard("Niv-Mizzet Reborn")) //Wandelnder Wildwuchs Wildgrowth Walker
 
     init {
         canvas.addEventHandler(MouseEvent.MOUSE_CLICKED) { event: MouseEvent ->
@@ -20,9 +20,11 @@ class DeckbuilderControl(cardLoader: CardLoader) {
     }
 
     private fun draw(event: MouseEvent) {
+        gc.save()
         val scale = canvas.height / magicCard.height
         gc.scale(scale, scale)
         magicCard.draw(gc)
+        gc.restore()
     }
 
 }

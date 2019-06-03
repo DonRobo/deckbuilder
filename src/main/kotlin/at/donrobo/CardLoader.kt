@@ -11,6 +11,8 @@ class CardLoader(cardJson: String, vararg languages: Language) {
     private val cards: Map<String, List<MagicCard>>
 
     init {
+        if (languages.isEmpty()) throw RuntimeException("I need *some* languages for this to work")
+
         val mutableCards = HashMap<String, MutableList<MagicCard>>().withDefault { ArrayList() }
 
         fun MutableMap<String, MutableList<MagicCard>>.addCard(cardName: String, cardLoaderCard: MagicCard) {
@@ -30,9 +32,15 @@ class CardLoader(cardJson: String, vararg languages: Language) {
 
                 val types = cardData["types"].array.map { CardType.byHumanReadableName(it.string) }
                 val colors = cardData["colorIdentity"].array.map { it.string }.map { CardColor.byLetter(it) }
+                val cost = parseCost(if (cardData.has("manaCost")) cardData["manaCost"].string else "")
+                val power = 0
+                val toughness = 0
 
                 for (language in languages) {
                     if (language == Language.ENGLISH) {
+                        val text = if (cardData.has("text")) cardData["text"].string else null
+                        val typeText = if (cardData.has("type")) cardData["type"].string else "N/A"
+
                         mutableCards.addCard(
                             cardName,
                             MagicCard(
@@ -40,22 +48,36 @@ class CardLoader(cardJson: String, vararg languages: Language) {
                                 name = cardName,
                                 language = Language.ENGLISH,
                                 colors = colors,
-                                types = types
+                                types = types,
+                                text = if (text.isNullOrBlank()) null else text.trim(),
+                                typeText = typeText,
+                                cost = cost,
+                                power = power,
+                                toughness = toughness
                             )
                         )
                     } else if (cardData.has("foreignData")) {
                         val foreignData =
                             cardData["foreignData"].array.singleOrNull { it["language"].string == language.humanReadableEnglish }
+                                ?.obj
                         if (foreignData != null) {
                             val foreignName = foreignData["name"].string
+                            val text = if (foreignData.has("text")) foreignData["text"].string else null
+                            val typeText = if (foreignData.has("type")) foreignData["type"].string else "N/A"
+
                             mutableCards.addCard(
                                 foreignName,
                                 MagicCard(
                                     originalName = cardName,
                                     name = foreignName,
+                                    types = types,
                                     language = language,
                                     colors = colors,
-                                    types = types
+                                    text = if (text.isNullOrBlank()) null else text.trim(),
+                                    typeText = typeText,
+                                    cost = cost,
+                                    power = power,
+                                    toughness = toughness
                                 )
                             )
                         }
@@ -66,6 +88,50 @@ class CardLoader(cardJson: String, vararg languages: Language) {
 
         cards = mutableCards
     }
+
+    private fun parseCost(costString: String): List<Cost> {
+        fun manaSymbolToCost(value: String): Cost {
+            val generic = value.toIntOrNull()
+
+
+            return if (generic != null)
+                GenericCost(generic)
+            else if (value.matches(Regex(".+/.+"))) {
+                val costs = value.split("/")
+
+                if (costs.size != 2) {
+                    throw RuntimeException("Weird cost: $costs")
+                }
+
+                CombinedCost(manaSymbolToCost(costs[0]), manaSymbolToCost(costs[1]))
+            } else when (value) {
+                "U" -> BlueCost
+                "R" -> RedCost
+                "G" -> GreenCost
+                "B" -> BlackCost
+                "W" -> WhiteCost
+                "P" -> PhyrexianCost
+                "X" -> XCost
+                "Y" -> YCost
+                "Z" -> ZCost
+                "S" -> SnowCost
+                "C" -> ColorlessCost
+                "HW" -> HalfCost(WhiteCost)
+                else -> throw UnsupportedOperationException("Can't parse $value")
+            }
+        }
+
+        val cost = ArrayList<Cost>()
+
+        val pattern = Regex("\\{([^}]+)}")
+        for (match in pattern.findAll(costString)) {
+            val value = match.groupValues[1]
+            cost += manaSymbolToCost(value)
+        }
+
+        return cost
+    }
+
 
 //    private fun calculateColor(colors: List<String>): CardColor {
 //        val colorString = colors.joinToString("")

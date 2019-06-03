@@ -9,7 +9,7 @@ import javafx.stage.Stage
 class Deckbuilder : Application() {
 
     override fun start(stage: Stage) {
-        val deckbuilder = DeckbuilderControl(CardLoader("/AllCards.json"))
+        val deckbuilder = DeckbuilderControl(CardLoader("/AllCards.json",Language.ENGLISH, Language.GERMAN))
 
         val stackPane = StackPane(deckbuilder.canvas)
         deckbuilder.canvas.widthProperty().bind(stackPane.widthProperty())
@@ -23,7 +23,7 @@ class Deckbuilder : Application() {
 }
 
 fun main(args: Array<String>) {
-//    Application.launch(Deckbuilder::class.java, *args)
-    val cardLoader = CardLoader("/AllCards.json",Language.ENGLISH, Language.GERMAN)
-    println(cardLoader.getCard("Wandelnder Wildwuchs"))
+    Application.launch(Deckbuilder::class.java, *args)
+//    val cardLoader = CardLoader("/AllCards.json",Language.ENGLISH, Language.GERMAN)
+//    println(cardLoader.getCard("Wandelnder Wildwuchs"))
 }
