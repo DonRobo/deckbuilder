@@ -30,9 +30,12 @@ class MagicCardPainter(val magicCard: MagicCard) {
         gc.fill = BLACK
         gc.fillRoundRect(0.0, 0.0, width, height, outerArc, outerArc)
 
-        gc.fill = when (magicCard.color) {
-            CardColor.GREEN -> GREEN
-        }
+        gc.fill =
+            if (magicCard.colors.singleOrNull() == CardColor.GREEN) GREEN else TODO("Implement color ${magicCard.colors}")
+//        gc.fill = when (magicCard.color) {
+//            CardColor.GREEN -> GREEN
+//            else -> TODO("Implement color ${magicCard.color}")
+//        }
         gc.fillRoundRect(
             innerFrameoffset, innerFrameoffset,
             width - innerFrameoffset * 2, height - innerFrameoffset * 2,

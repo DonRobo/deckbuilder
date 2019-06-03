@@ -8,7 +8,7 @@ class DeckbuilderControl(cardLoader: CardLoader) {
 
     val canvas = Canvas()
     private val gc get() = canvas.graphicsContext2D
-    private val magicCard = MagicCardPainter(cardLoader.loadCard("Wildgrowth Walker"))
+    private val magicCard = MagicCardPainter(cardLoader.getCard("Wildgrowth Walker"))
 
     init {
         canvas.addEventHandler(MouseEvent.MOUSE_CLICKED) { event: MouseEvent ->

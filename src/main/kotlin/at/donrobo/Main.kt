@@ -25,5 +25,5 @@ class Deckbuilder : Application() {
 fun main(args: Array<String>) {
 //    Application.launch(Deckbuilder::class.java, *args)
     val cardLoader = CardLoader("/AllCards.json",Language.ENGLISH, Language.GERMAN)
-    println(cardLoader.loadCard("Wandelnder Wildwuchs"))
+    println(cardLoader.getCard("Wandelnder Wildwuchs"))
 }
