@@ -1,0 +1,26 @@
+.cardContainer {
+    -fx-background-color: black;
+    -fx-background-radius: 10;
+}
+
+.cardBackground {
+    -fx-background-color: #7ca98a;
+    -fx-background-radius: 6;
+    -fx-background-repeat: stretch;
+    -fx-background-size: stretch stretch;
+}
+
+.frameHeader {
+    -fx-background-radius: 18px;
+    -fx-background-color: #d1cfc3;
+    /*-fx-effect: dropshadow(gaussian, #171314, 2, 1, 0, 0);*/
+    /*-fx-effect: dropshadow(gaussian, #26714A, 6, 1, 0, 0);*/
+}
+
+.cardName {
+    -fx-font-size: 30;
+    -fx-padding: 0 0 0 20;
+}
+
+/*      hoffset voffset blur spread color*/
+/*box-shadow: 0 0 0 2px #171314, 0 0 0 5px #26714A, -3px 3px 2px 5px #171314;*/
