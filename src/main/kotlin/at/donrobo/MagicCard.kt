@@ -8,7 +8,6 @@ enum class Language(val humanReadableEnglish: String) {
 enum class CardType(val humanReadableName: String) {
     LAND("Land"),
     CREATURE("Creature"),
-    SUMMON("Summon"),
     ENCHANTMENT("Enchantment"),
     INSTANT("Instant"),
     SORCERY("Sorcery"),
@@ -16,7 +15,6 @@ enum class CardType(val humanReadableName: String) {
     TRIBAL("Tribal"),
     PLANE("Plane"),
     HERO("Hero"),
-    EATURECRAY("Eaturecray"),
     OTHER("Other"),
     SCHEME("Scheme"),
     CONSPIRACY("Conspiracy"),
@@ -28,8 +26,10 @@ enum class CardType(val humanReadableName: String) {
 
     companion object {
         fun byHumanReadableName(name: String): CardType = when (name) {
-            "Scariest", "You’ll", "Ever","See" -> OTHER
-            "instant"->INSTANT
+            "Scariest", "You’ll", "Ever", "See" -> OTHER
+            "instant" -> INSTANT
+            "Eaturecray" -> CREATURE
+            "Summon" -> CREATURE
             else -> values().singleOrNull { it.humanReadableName == name }
                 ?: throw UnsupportedOperationException("Unsupported card type: $name")
         }
