@@ -5,7 +5,8 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.TextFlow?>
-<AnchorPane prefHeight="936.0" prefWidth="672.0" styleClass="cardContainer" stylesheets="@card.css"
+<AnchorPane fx:id="apCardContainer" prefHeight="936.0" prefWidth="672.0" styleClass="cardContainer"
+            stylesheets="@card.css"
             xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="at.donrobo.CardPane">
     <children>

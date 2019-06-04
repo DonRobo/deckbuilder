@@ -1,15 +1,15 @@
 package at.donrobo.model
 
 import at.donrobo.MagicCard
-import javafx.beans.InvalidationListener
 import javafx.beans.property.DoubleProperty
-import javafx.beans.property.ReadOnlyProperty
-import javafx.beans.value.ChangeListener
+import javafx.beans.property.SimpleDoubleProperty
 import java.io.Serializable
 import java.util.*
 import kotlin.collections.HashMap
 
 data class PositionProperty(val xProperty: DoubleProperty, val yProperty: DoubleProperty) {
+    constructor(x: Double, y: Double) : this(SimpleDoubleProperty(x), SimpleDoubleProperty(y))
+
     var x: Double
         get() = xProperty.value
         set(value) {
@@ -41,58 +41,44 @@ sealed class DeckbuilderObject : Serializable {
 
 data class CardDeckbuilderObject(val card: MagicCard) : DeckbuilderObject()
 
-class CollectionDeckbuilderObject : DeckbuilderObject(), ReadOnlyProperty<Map<DeckbuilderObject, PositionProperty>> {
+class CollectionDeckbuilderObject : DeckbuilderObject() {
 
-    private val invalidationListeners: MutableList<InvalidationListener> = ArrayList()
-    private val changeListeners: MutableList<ChangeListener<in Map<DeckbuilderObject, PositionProperty>>> = ArrayList()
+    private val objectAddedListeners: MutableList<(DeckbuilderObject, PositionProperty) -> Unit> = LinkedList()
+    private val objectRemovedListeners: MutableList<(DeckbuilderObject) -> Unit> = LinkedList()
 
     private val internalDeckbuilderObjects: MutableMap<DeckbuilderObject, PositionProperty> = HashMap()
 
     val deckbuilderObjects: Map<DeckbuilderObject, PositionProperty> get() = internalDeckbuilderObjects
 
     fun addObject(deckbuilderObject: DeckbuilderObject, position: PositionProperty) {
-        val oldValue = internalDeckbuilderObjects.toMap()
-
         internalDeckbuilderObjects[deckbuilderObject] = position
 
-        changeListeners.forEach { it.changed(this, oldValue, deckbuilderObjects) }
+        objectAddedListeners.forEach { it(deckbuilderObject, position) }
     }
 
     fun removeObject(deckbuilderObject: DeckbuilderObject): PositionProperty? {
-        val oldValue = internalDeckbuilderObjects.toMap()
-
         val returnValue = internalDeckbuilderObjects.remove(deckbuilderObject)
 
-        changeListeners.forEach { it.changed(this, oldValue, deckbuilderObjects) }
+        if (returnValue != null)
+            objectRemovedListeners.forEach { it(deckbuilderObject) }
 
         return returnValue
     }
 
-    override fun removeListener(listener: ChangeListener<in Map<DeckbuilderObject, PositionProperty>>) {
-        changeListeners.remove(listener)
+    fun addObjectAddedListener(listener: (DeckbuilderObject, PositionProperty) -> Unit) {
+        objectAddedListeners += listener
     }
 
-    override fun removeListener(listener: InvalidationListener) {
-        invalidationListeners.remove(listener)
+    fun addObjectRemovedListener(listener: (DeckbuilderObject) -> Unit) {
+        objectRemovedListeners += listener
     }
 
-    override fun getName(): String {
-        return "CollectionDeckbuilderObject"
+    fun removeObjectAddedListener(listener: (DeckbuilderObject, PositionProperty) -> Unit) {
+        objectAddedListeners -= listener
     }
 
-    override fun addListener(listener: ChangeListener<in Map<DeckbuilderObject, PositionProperty>>) {
-        changeListeners += listener
+    fun removeObjectRemovedListener(listener: (DeckbuilderObject) -> Unit) {
+        objectRemovedListeners -= listener
     }
 
-    override fun addListener(listener: InvalidationListener) {
-        invalidationListeners += listener
-    }
-
-    override fun getBean(): Any? {
-        return null
-    }
-
-    override fun getValue(): Map<DeckbuilderObject, PositionProperty> {
-        return deckbuilderObjects
-    }
 }
