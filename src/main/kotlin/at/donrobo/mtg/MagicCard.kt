@@ -84,5 +84,6 @@ data class MagicCard(
     val typeText: String,
     val cost: List<Cost>,
     val power: Int?,
-    val toughness: Int?
+    val toughness: Int?,
+    val uuid: String
 )

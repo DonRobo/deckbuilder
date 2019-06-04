@@ -1,6 +1,8 @@
 package at.donrobo.view
 
 import at.donrobo.mtg.MagicCard
+import at.donrobo.mtg.retrieveScryfallCard
+import javafx.concurrent.Task
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.Label
@@ -12,17 +14,42 @@ import javafx.scene.layout.Region
 import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
 import javafx.scene.transform.Scale
+import org.apache.commons.io.IOUtils
+import java.io.File
+import java.net.URL
+import java.util.concurrent.Executors
 
 class CardPane {
 
     private var internalCard: MagicCard? = null
+    private val artCache = File("artCache")
+
+    private fun setArt(value: MagicCard) {
+        val task: Task<Image> = object : Task<Image>() {
+            override fun call(): Image {
+                val cacheFile = File(artCache, "${value.uuid}.png")
+                if (!cacheFile.exists()) {
+                    val scryfall = retrieveScryfallCard(value)
+                    val artUrl = URL(scryfall.imageUris.artCrop)
+                    cacheFile.outputStream().use { ous ->
+                        artUrl.openStream().use { ins ->
+                            IOUtils.copy(ins, ous)
+                        }
+                    }
+                }
+                return Image(cacheFile.toURI().toString())
+            }
+        }
+        Executors.newSingleThreadExecutor().submit(task)
+        task.setOnSucceeded { art = task.value }
+    }
 
     var card: MagicCard?
         set(value) {
             if (value != null) {
                 cardName = value.name
                 cardText = value.text ?: ""
-                artUrl = "https://img.scryfall.com/cards/art_crop/en/xln/216.jpg?1527430784"
+                setArt(value)
             }
             internalCard = value
         }
@@ -46,12 +73,12 @@ class CardPane {
             return lblCardName.text
         }
 
-    var artUrl: String
+    var art: Image
         set(value) {
-            ivArt.image = Image(value, true) //TODO cachen
+            ivArt.image = value
         }
         get() {
-            return ivArt.image.url
+            return ivArt.image
         }
 
     var cardText: String

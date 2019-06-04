@@ -4,3 +4,4 @@ logs/
 profiles/
 system/
 target/
+artCache/*.png
