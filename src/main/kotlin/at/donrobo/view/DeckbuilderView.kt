@@ -20,7 +20,7 @@ data class PositionedObject(
 
 class DeckbuilderView(val deckbuilderCollection: CollectionDeckbuilderObject) : Pane() {
 
-    private val cardSizeProperty = SimpleDoubleProperty(150.0)
+    private val cardSizeProperty = SimpleDoubleProperty(400.0)
     var cardSize: Double
         get() = cardSizeProperty.value
         set(value) {

@@ -1,5 +1,6 @@
 package at.donrobo.view
 
+import at.donrobo.mtg.CardColor
 import at.donrobo.mtg.MagicCard
 import at.donrobo.mtg.retrieveScryfallCard
 import javafx.concurrent.Task
@@ -52,11 +53,32 @@ class CardPane {
                 cardName = value.name
                 cardText = value.text ?: ""
                 setArt(value)
+                colorClass = calculateColor(value.colors)
             }
             internalCard = value
         }
         get() = internalCard
 
+    private fun calculateColor(colors: List<CardColor>): String =
+        when (colors) {
+            emptyList<CardColor>() -> "gray"
+            listOf(CardColor.RED) -> "red"
+            listOf(CardColor.GREEN) -> "green"
+            listOf(CardColor.BLACK) -> "black"
+            listOf(CardColor.BLUE) -> "blue"
+            listOf(CardColor.WHITE) -> "white"
+            listOf(CardColor.BLACK, CardColor.GREEN) -> "blackGreen"
+            listOf(CardColor.BLACK, CardColor.RED) -> "blackRed"
+            listOf(CardColor.BLACK, CardColor.BLUE) -> "blackBlue"
+            listOf(CardColor.BLACK, CardColor.WHITE) -> "blackWhite"
+            listOf(CardColor.GREEN, CardColor.RED) -> "greenRed"
+            listOf(CardColor.GREEN, CardColor.BLUE) -> "greenBlue"
+            listOf(CardColor.GREEN, CardColor.WHITE) -> "greenWhite"
+            listOf(CardColor.RED, CardColor.BLUE) -> "redBlue"
+            listOf(CardColor.RED, CardColor.WHITE) -> "redWhite"
+            listOf(CardColor.BLUE, CardColor.WHITE) -> "blueWhite"
+            else -> if (colors.size > 2) "gold" else TODO("Support $colors colors")
+        }
 
     @FXML
     private lateinit var lblCardName: Label
@@ -66,6 +88,8 @@ class CardPane {
     private lateinit var ivArt: ImageView
     @FXML
     private lateinit var apCardContainer: AnchorPane
+    @FXML
+    private lateinit var apCardBackground: AnchorPane
 
     var cardName: String
         set(value) {
@@ -90,6 +114,15 @@ class CardPane {
         }
         get() {
             return taCardText.children.filter { it is Text }.map { (it as Text).text }.joinToString("")
+        }
+
+    var colorClass: String
+        get() = if (apCardBackground.styleClass.size == 2) apCardBackground.styleClass[1] else ""
+        set(value) {
+            if (apCardBackground.styleClass.size > 1) {
+                apCardBackground.styleClass.remove(1, apCardBackground.styleClass.size)
+            }
+            apCardBackground.styleClass.add(value)
         }
 
     private val cardRatio = 63.0 / 88.0

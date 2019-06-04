@@ -25,7 +25,7 @@ class CardShower : Application() {
         stage.show()
 
         val position = PositionProperty(100.0, 0.0)
-        collection.addObject(CardDeckbuilderObject(cardLoader.getCard("Wildgrowth Walker")), position)
+        collection.addObject(CardDeckbuilderObject(cardLoader.getCard("Thought Erasure")), position)
         myRoot.addEventHandler(MouseEvent.MOUSE_CLICKED) {
             if (it.button == MouseButton.SECONDARY) {
                 collection.addObject(CardDeckbuilderObject(cardLoader.randomCard()), PositionProperty(it.x, it.y))

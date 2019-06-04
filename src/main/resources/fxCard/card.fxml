@@ -9,7 +9,8 @@
             stylesheets="@card.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="at.donrobo.view.CardPane">
     <children>
-        <AnchorPane styleClass="cardBackground" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0"
+        <AnchorPane fx:id="apCardBackground" styleClass="cardBackground" AnchorPane.bottomAnchor="20.0"
+                    AnchorPane.leftAnchor="20.0"
                     AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
             <children>
                 <VBox AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
