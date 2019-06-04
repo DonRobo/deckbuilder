@@ -2,32 +2,39 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-
-<AnchorPane prefHeight="936.0" prefWidth="672.0" styleClass="cardContainer" stylesheets="@card.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.donrobo.CardPane">
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.TextFlow?>
+<AnchorPane prefHeight="936.0" prefWidth="672.0" styleClass="cardContainer" stylesheets="@card.css"
+            xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="at.donrobo.CardPane">
     <children>
-        <AnchorPane styleClass="cardBackground" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+        <AnchorPane styleClass="cardBackground" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0"
+                    AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
             <children>
-                <VBox AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                <VBox AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
+                      AnchorPane.topAnchor="10.0">
                     <children>
                         <HBox styleClass="frameHeader">
                             <children>
-                                <Label prefHeight="44.0" styleClass="cardName" text="Oath of Nissa" />
+                                <Label fx:id="lblCardName" prefHeight="44.0" styleClass="cardName"/>
                             </children>
                             <effect>
                                 <DropShadow offsetX="-3.0" offsetY="3.0" radius="4.75">
                                     <input>
-                                        <DropShadow color="#26714a" height="1.0" radius="2.25" spread="1.0" width="10.0">
+                                        <DropShadow color="#26714a" height="1.0" radius="2.25" spread="1.0"
+                                                    width="10.0">
                                             <input>
-                                                <DropShadow height="5.0" radius="1.75" spread="1.0" width="5.0" />
+                                                <DropShadow height="5.0" radius="1.75" spread="1.0" width="5.0"/>
                                             </input>
                                         </DropShadow>
                                     </input>
                                 </DropShadow>
                             </effect>
                         </HBox>
+                        <ImageView fx:id="ivArt" fitHeight="362.0" fitWidth="537.0" pickOnBounds="true"
+                                   preserveRatio="true"/>
+                        <TextFlow fx:id="taCardText" prefHeight="200.0" prefWidth="200.0"/>
                     </children>
                 </VBox>
             </children>
