@@ -19,10 +19,10 @@ class CardShower : Application() {
 
         val myRoot = Group()
         myRoot.children.add(root)
-        root.layoutX=30.0
-        root.layoutY=100.0
-        root.scaleX=0.33
-        root.scaleY=0.33
+        root.layoutX = 30.0
+        root.layoutY = 100.0
+        root.scaleX = 0.33
+        root.scaleY = 0.33
 
         stage.title = "CardShower"
         stage.scene = Scene(myRoot)

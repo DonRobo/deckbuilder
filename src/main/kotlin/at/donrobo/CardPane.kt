@@ -2,10 +2,8 @@ package at.donrobo
 
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
-import javafx.scene.Group
 import javafx.scene.Node
 import javafx.scene.Parent
-import javafx.scene.Scene
 import javafx.scene.control.Label
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
@@ -61,8 +59,6 @@ class CardPane {
         }
 
     companion object{
-//        private val cardLoader:CardLoader= CardLoader("/AllCards.json", Language.ENGLISH, Language.GERMAN)
-
         fun setUpCardNode(card:MagicCard):Node{
             val loader = FXMLLoader(CardPane::class.java.getResource("/fxCard/card.fxml"))
             val root: Parent = loader.load()
