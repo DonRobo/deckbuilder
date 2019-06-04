@@ -31,6 +31,11 @@ class CardShower : Application() {
                 collection.addObject(CardDeckbuilderObject(cardLoader.randomCard()), PositionProperty(it.x, it.y))
             }
         }
+        myRoot.addEventHandler(MouseEvent.MOUSE_DRAGGED) {
+            if (it.button == MouseButton.SECONDARY) {
+                collection.addObject(CardDeckbuilderObject(cardLoader.randomCard()), PositionProperty(it.x, it.y))
+            }
+        }
     }
 }
 

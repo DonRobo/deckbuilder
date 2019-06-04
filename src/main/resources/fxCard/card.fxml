@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.TextFlow?>
 <AnchorPane fx:id="apCardContainer" prefHeight="936.0" prefWidth="672.0" styleClass="cardContainer"
-            stylesheets="@card.css"
-            xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@card.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="at.donrobo.view.CardPane">
     <children>
         <AnchorPane styleClass="cardBackground" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0"
@@ -33,9 +32,9 @@
                                 </DropShadow>
                             </effect>
                         </HBox>
-                        <ImageView fx:id="ivArt" fitHeight="362.0" fitWidth="537.0" pickOnBounds="true"
+                        <ImageView fx:id="ivArt" fitHeight="455.0" fitWidth="604.0" pickOnBounds="true"
                                    preserveRatio="true"/>
-                        <TextFlow fx:id="taCardText" prefHeight="200.0" prefWidth="200.0"/>
+                        <TextFlow fx:id="taCardText" prefHeight="335.0" prefWidth="612.0" styleClass="cardText"/>
                     </children>
                 </VBox>
             </children>

@@ -19,6 +19,8 @@ import java.io.File
 import java.net.URL
 import java.util.concurrent.Executors
 
+private val executor = Executors.newSingleThreadExecutor { r: Runnable -> Thread(r).apply { isDaemon = true } }
+
 class CardPane {
 
     private var internalCard: MagicCard? = null
@@ -40,7 +42,7 @@ class CardPane {
                 return Image(cacheFile.toURI().toString())
             }
         }
-        Executors.newSingleThreadExecutor().submit(task)
+        executor.submit(task)
         task.setOnSucceeded { art = task.value }
     }
 

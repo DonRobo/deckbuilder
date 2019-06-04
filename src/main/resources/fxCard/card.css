@@ -22,5 +22,7 @@
     -fx-padding: 0 0 0 20;
 }
 
-/*      hoffset voffset blur spread color*/
-/*box-shadow: 0 0 0 2px #171314, 0 0 0 5px #26714A, -3px 3px 2px 5px #171314;*/
+.cardText {
+    -fx-font-size: 40;
+    -fx-background-color: #def2ed;
+}
