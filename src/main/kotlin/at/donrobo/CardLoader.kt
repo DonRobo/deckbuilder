@@ -6,7 +6,10 @@ import com.google.gson.JsonObject
 import com.google.gson.stream.JsonReader
 import java.net.URL
 
-class CardLoader(cardJson: String, vararg languages: Language) {
+class CardLoader(
+    cardJson: String = "/AllCards.json",
+    vararg languages: Language = arrayOf(Language.ENGLISH, Language.GERMAN)
+) {
 
     private val cards: Map<String, List<MagicCard>>
 

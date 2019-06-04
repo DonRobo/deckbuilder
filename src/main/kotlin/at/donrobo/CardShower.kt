@@ -2,6 +2,7 @@ package at.donrobo
 
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
+import javafx.scene.Group
 import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.stage.Stage
@@ -16,8 +17,15 @@ class CardShower : Application() {
 
         val controller = loader.getController<CardPane>()
 
+        val myRoot = Group()
+        myRoot.children.add(root)
+        root.layoutX=30.0
+        root.layoutY=100.0
+        root.scaleX=0.33
+        root.scaleY=0.33
+
         stage.title = "CardShower"
-        stage.scene = Scene(root)
+        stage.scene = Scene(myRoot)
         stage.show()
 
         controller.card = cardLoader.getCard("Llanowarelfen")
