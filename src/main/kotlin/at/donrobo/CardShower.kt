@@ -4,14 +4,11 @@ import at.donrobo.model.CardDeckbuilderObject
 import at.donrobo.model.CollectionDeckbuilderObject
 import at.donrobo.model.PositionProperty
 import at.donrobo.view.DeckbuilderView
-import javafx.animation.Animation
-import javafx.animation.KeyFrame
-import javafx.animation.KeyValue
-import javafx.animation.Timeline
 import javafx.application.Application
 import javafx.scene.Scene
+import javafx.scene.input.MouseButton
+import javafx.scene.input.MouseEvent
 import javafx.stage.Stage
-import javafx.util.Duration
 
 class CardShower : Application() {
     val cardLoader = CardLoader("/AllCards.json", Language.ENGLISH, Language.GERMAN)
@@ -27,16 +24,11 @@ class CardShower : Application() {
 
         val position = PositionProperty(100.0, 0.0)
         collection.addObject(CardDeckbuilderObject(cardLoader.getCard("Wildgrowth Walker")), position)
-
-        val tl = Timeline()
-        val kv1 = KeyValue(position.yProperty, 100)
-        val kf1 = KeyFrame(Duration.seconds(1.0), kv1)
-        val kv2 = KeyValue(position.yProperty, 0)
-        val kf2 = KeyFrame(Duration.seconds(2.0), kv2)
-
-        tl.keyFrames.addAll(kf1, kf2)
-        tl.cycleCount = Animation.INDEFINITE
-        tl.play()
+        myRoot.addEventHandler(MouseEvent.MOUSE_CLICKED) {
+            if (it.button == MouseButton.SECONDARY) {
+                collection.addObject(CardDeckbuilderObject(cardLoader.randomCard()), PositionProperty(it.x, it.y))
+            }
+        }
     }
 }
 

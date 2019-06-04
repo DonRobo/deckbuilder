@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.stream.JsonReader
 import java.net.URL
+import kotlin.random.Random
 
 class CardLoader(
     cardJson: String = "/AllCards.json",
@@ -160,6 +161,12 @@ class CardLoader(
 
     fun getCard(name: String): MagicCard {
         return cards.getValue(name).singleOrNull() ?: throw IllegalArgumentException("Card $name doesn't exist!")
+    }
+
+    fun randomCard(): MagicCard {
+        val allCards = cards.values.flatten()
+
+        return allCards[Random.nextInt(allCards.size)]
     }
 }
 
