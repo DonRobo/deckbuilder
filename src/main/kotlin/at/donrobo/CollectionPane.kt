@@ -1,5 +1,7 @@
 package at.donrobo
 
+import at.donrobo.mtg.CardLoader
+import at.donrobo.view.CardPane
 import javafx.application.Application
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.SimpleDoubleProperty

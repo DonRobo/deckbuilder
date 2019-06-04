@@ -1,5 +1,6 @@
-package at.donrobo
+package at.donrobo.view
 
+import at.donrobo.mtg.MagicCard
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.Label

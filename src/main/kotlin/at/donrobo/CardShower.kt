@@ -3,6 +3,8 @@ package at.donrobo
 import at.donrobo.model.CardDeckbuilderObject
 import at.donrobo.model.CollectionDeckbuilderObject
 import at.donrobo.model.PositionProperty
+import at.donrobo.mtg.CardLoader
+import at.donrobo.mtg.Language
 import at.donrobo.view.DeckbuilderView
 import javafx.application.Application
 import javafx.scene.Scene

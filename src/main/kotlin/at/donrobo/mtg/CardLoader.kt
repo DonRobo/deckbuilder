@@ -1,4 +1,4 @@
-package at.donrobo
+package at.donrobo.mtg
 
 import com.github.salomonbrys.kotson.*
 import com.google.gson.Gson

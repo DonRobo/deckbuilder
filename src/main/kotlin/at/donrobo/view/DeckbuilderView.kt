@@ -1,6 +1,5 @@
 package at.donrobo.view
 
-import at.donrobo.CardPane
 import at.donrobo.model.CardDeckbuilderObject
 import at.donrobo.model.CollectionDeckbuilderObject
 import at.donrobo.model.DeckbuilderObject

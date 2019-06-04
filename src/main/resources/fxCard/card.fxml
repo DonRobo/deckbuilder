@@ -8,7 +8,7 @@
 <AnchorPane fx:id="apCardContainer" prefHeight="936.0" prefWidth="672.0" styleClass="cardContainer"
             stylesheets="@card.css"
             xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="at.donrobo.CardPane">
+            fx:controller="at.donrobo.view.CardPane">
     <children>
         <AnchorPane styleClass="cardBackground" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0"
                     AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">

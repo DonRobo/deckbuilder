@@ -1,4 +1,4 @@
-package at.donrobo
+package at.donrobo.mtg
 
 enum class Language(val humanReadableEnglish: String) {
 
