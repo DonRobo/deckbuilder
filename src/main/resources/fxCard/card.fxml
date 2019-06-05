@@ -16,6 +16,8 @@
                 <Pane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                       AnchorPane.topAnchor="0.0">
                     <children>
+                        <ImageView fx:id="ivArt" fitHeight="455.0" fitWidth="604.0" layoutX="13.0" layoutY="51.0"
+                                   pickOnBounds="true" preserveRatio="true"/>
                         <HBox layoutX="13.0" layoutY="6.0" prefHeight="45.0" prefWidth="604.0" styleClass="frameHeader">
                             <children>
                                 <Label fx:id="lblCardName" prefHeight="44.0" styleClass="cardName"/>
@@ -33,8 +35,6 @@
                                 </DropShadow>
                             </effect>
                         </HBox>
-                        <ImageView fx:id="ivArt" fitHeight="455.0" fitWidth="604.0" layoutX="13.0" layoutY="51.0"
-                                   pickOnBounds="true" preserveRatio="true"/>
                         <ScrollPane layoutX="13.0" layoutY="506.0">
                             <content>
                                 <TextFlow fx:id="taCardText" prefHeight="335.0" prefWidth="612.0"
