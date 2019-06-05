@@ -54,6 +54,12 @@ class CardPane {
                 cardText = value.text ?: ""
                 setArt(value)
                 colorClass = calculateColor(value.colors)
+                if (value.power != null && value.toughness != null) {
+                    lblAttackDefense.style = "visibility: visible"
+                    lblAttackDefense.text = "${value.power} / ${value.toughness}"
+                } else {
+                    lblAttackDefense.style = "visibility: hidden"
+                }
             }
             internalCard = value
         }
@@ -90,6 +96,8 @@ class CardPane {
     private lateinit var apCardContainer: AnchorPane
     @FXML
     private lateinit var apCardBackground: AnchorPane
+    @FXML
+    private lateinit var lblAttackDefense: Label
 
     var cardName: String
         set(value) {

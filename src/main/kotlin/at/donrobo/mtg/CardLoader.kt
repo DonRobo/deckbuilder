@@ -37,8 +37,8 @@ class CardLoader(
                 val types = cardData["types"].array.map { CardType.byHumanReadableName(it.string) }
                 val colors = cardData["colorIdentity"].array.map { it.string }.map { CardColor.byLetter(it) }
                 val cost = parseCost(if (cardData.has("manaCost")) cardData["manaCost"].string else "")
-                val power = 0
-                val toughness = 0
+                val power = if (cardData.has("power")) cardData["power"].string else null
+                val toughness = if (cardData.has("toughness")) cardData["toughness"].string else null
                 val uuid = cardData["uuid"].string
 
                 for (language in languages) {

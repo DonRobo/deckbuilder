@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
@@ -10,13 +11,12 @@
             fx:controller="at.donrobo.view.CardPane">
     <children>
         <AnchorPane fx:id="apCardBackground" styleClass="cardBackground" AnchorPane.bottomAnchor="20.0"
-                    AnchorPane.leftAnchor="20.0"
-                    AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                    AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
             <children>
-                <VBox AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
-                      AnchorPane.topAnchor="10.0">
+                <Pane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                      AnchorPane.topAnchor="0.0">
                     <children>
-                        <HBox styleClass="frameHeader">
+                        <HBox layoutX="13.0" layoutY="6.0" prefHeight="45.0" prefWidth="604.0" styleClass="frameHeader">
                             <children>
                                 <Label fx:id="lblCardName" prefHeight="44.0" styleClass="cardName"/>
                             </children>
@@ -33,11 +33,19 @@
                                 </DropShadow>
                             </effect>
                         </HBox>
-                        <ImageView fx:id="ivArt" fitHeight="455.0" fitWidth="604.0" pickOnBounds="true"
-                                   preserveRatio="true"/>
-                        <TextFlow fx:id="taCardText" prefHeight="335.0" prefWidth="612.0" styleClass="cardText"/>
+                        <ImageView fx:id="ivArt" fitHeight="455.0" fitWidth="604.0" layoutX="13.0" layoutY="51.0"
+                                   pickOnBounds="true" preserveRatio="true"/>
+                        <ScrollPane layoutX="13.0" layoutY="506.0">
+                            <content>
+                                <TextFlow fx:id="taCardText" prefHeight="335.0" prefWidth="612.0"
+                                          styleClass="cardText"/>
+                            </content>
+                        </ScrollPane>
+                        <Label fx:id="lblAttackDefense" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="514.0"
+                               layoutY="809.0" prefHeight="45.0" prefWidth="110.0" styleClass="attackDefense"
+                               text="Label" textAlignment="RIGHT"/>
                     </children>
-                </VBox>
+                </Pane>
             </children>
         </AnchorPane>
     </children>

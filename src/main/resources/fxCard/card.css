@@ -2,7 +2,7 @@
     -fx-green: #7ca98a;
     -fx-red: #c76561;
     -fx-blue: #5288a9;
-    -fx-black: #606060;
+    -fx-black: #3b3b3b;
     -fx-white: #e1e1e1;
     -fx-gray: #aeaeae;
     -fx-gold: #ae9d4e;
@@ -107,4 +107,9 @@
 .cardText {
     -fx-font-size: 40;
     -fx-background-color: #def2ed;
+}
+
+.attackDefense {
+    -fx-background-color: #d0d0d0;
+    -fx-font-size: 40;
 }
