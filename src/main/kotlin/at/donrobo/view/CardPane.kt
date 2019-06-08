@@ -133,15 +133,24 @@ class CardPane {
         }
 
     private fun parseText(value: String): List<Node> {
+        fun ArrayList<Node>.addText(str: String?): Boolean {
+            if (!str.isNullOrBlank()) {
+                add(Text(str))
+                return true
+            }
+
+            return false
+        }
+
         val segments = ArrayList<Node>()
 
         var current = 0
         for (matchResult in symbolPattern.findAll(value)) {
-            segments += Text(value.substring(current, matchResult.range.first))
+            segments.addText(value.substring(current, matchResult.range.first))
             segments += symbol(manaSymbolToCost(matchResult.groupValues[1]))
             current = matchResult.range.last + 1
         }
-        segments += Text(value.substring(current))
+        segments.addText(value.substring(current))
 
         return segments
     }

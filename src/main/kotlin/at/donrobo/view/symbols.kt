@@ -3,6 +3,7 @@ package at.donrobo.view
 import at.donrobo.mtg.*
 import javafx.scene.Node
 import javafx.scene.control.Label
+import javafx.scene.layout.StackPane
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import javafx.scene.shape.SVGPath
@@ -20,13 +21,14 @@ fun symbol(cost: Cost): Node {
         is GenericCost -> genericCost("${cost.number}")
         is XCost -> genericCost("X")
         is TapCost -> tapCost()
+        is ColorlessCost -> colorlessMana()
         else -> TODO("Show $cost")
     }
 }
 
 fun genericCost(cost: String): Node {
     val costLabel = Label(cost)
-    costLabel.style = "-fx-font-size: 500; -fx-font-weight: bold"
+    costLabel.style = "-fx-font-size: 30; -fx-font-weight: bold"
 
     return circle(Color.web("#CBC2BE"), costLabel)
 }
@@ -37,11 +39,11 @@ private fun redMana(): Node = circle(Color.web("#f9aa8f"), redSymbol())
 private fun greenMana(): Node = circle(Color.web("#9bd3ae"), greenSymbol())
 private fun whiteMana(): Node = circle(Color.web("#fffbd5"), whiteSymbol())
 private fun tapCost(): Node = circle(Color.web("#cbc2bf"), tapSymbol())
+private fun colorlessMana(): Node = circle(Color.web("#ccc2c0"), colorlessSymbol())
 
 private fun svgSymbol(path: String, color: Color, translateX: Double = 0.0, translateY: Double = 0.0): Node {
     val svgPath = SVGPath()
-    svgPath.content =
-        path
+    svgPath.content = path
 
     svgPath.fill = color
 
@@ -56,6 +58,9 @@ private fun svgSymbol(path: String, color: Color, translateX: Double = 0.0, tran
 
     svgPath.maxWidth(symbolSize)
     svgPath.maxHeight(symbolSize)
+
+    svgPath.scaleYProperty().bind(svgPath.scaleXProperty())
+    svgPath.scaleX = symbolSize / svgSize
 
     return svgPath
 
@@ -91,22 +96,22 @@ private fun tapSymbol(): Node = svgSymbol(
     color = Color.web("#130c0e")
 )
 
+private fun colorlessSymbol(): Node = svgSymbol(
+    path = "M300 60A500 500 0 0 0 540 300 500 500 0 0 0 300 540 500 500 0 0 0 60 300 500 500 0 0 0 300 60m0 90A300 300 0 0 1 150 300 300 300 0 0 1 300 450 300 300 0 0 1 450 300 300 300 0 0 1 300 150",
+    color = Color.web("#130c0e")
+)
+
 private fun circle(color: Color, symbol: Node): Node {
-//    val circle = Circle(svgSize / 2, svgSize / 2, svgSize / 2, color)
-//
-//    val stackPane = StackPane(circle, symbol)
-//
-//    stackPane.maxWidth = symbolSize
-//    stackPane.maxHeight = symbolSize
-//    stackPane.prefWidth= symbolSize
-//    stackPane.prefHeight = symbolSize
-//    stackPane.minWidth = symbolSize
-//    stackPane.minHeight = symbolSize
-//
-//    stackPane.scaleX = symbolSize / 600.0
-//    stackPane.scaleY = symbolSize / 600.0
+    val circle = Circle(symbolSize / 2.0, color)
 
-    return Circle(symbolSize / 2.0)
+    val stackPane = StackPane(circle, symbol)
 
-//    return stackPane
+    stackPane.maxWidth = symbolSize
+    stackPane.maxHeight = symbolSize
+    stackPane.prefWidth = symbolSize
+    stackPane.prefHeight = symbolSize
+    stackPane.minWidth = symbolSize
+    stackPane.minHeight = symbolSize
+
+    return stackPane
 }
