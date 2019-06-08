@@ -25,6 +25,7 @@ class DragAndDropControls(
                 draggingObjectStartPoint = Point2D(target.positionProperty.x, target.positionProperty.y)
                 draggingObjectPosition = target.positionProperty
                 target.node.toFront()
+                event.consume()
             }
         }
     }
@@ -37,6 +38,7 @@ class DragAndDropControls(
 
             draggingObjectPosition.x = (event.x - mouseStartPoint.x) + draggingObjectStartPoint.x
             draggingObjectPosition.y = (event.y - mouseStartPoint.y) + draggingObjectStartPoint.y
+            event.consume()
         }
     }
 
@@ -46,6 +48,7 @@ class DragAndDropControls(
             mouseStartPoint = null
             draggingObjectPosition = null
             draggingObjectStartPoint = null
+            event.consume()
         }
     }
 
@@ -53,9 +56,9 @@ class DragAndDropControls(
         bounds.filter { it.boundsProperty.get().contains(mousePosition) }
 
     fun registerEventHandlers() {
-        region.addEventHandler(MouseEvent.MOUSE_PRESSED, pressedListener)
-        region.addEventHandler(MouseEvent.MOUSE_DRAGGED, draggedListener)
-        region.addEventHandler(MouseEvent.MOUSE_RELEASED, releasedListener)
+        region.addEventFilter(MouseEvent.MOUSE_PRESSED, pressedListener)
+        region.addEventFilter(MouseEvent.MOUSE_DRAGGED, draggedListener)
+        region.addEventFilter(MouseEvent.MOUSE_RELEASED, releasedListener)
     }
 
 

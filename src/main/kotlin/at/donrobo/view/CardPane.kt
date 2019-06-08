@@ -1,15 +1,16 @@
 package at.donrobo.view
 
-import at.donrobo.mtg.CardColor
-import at.donrobo.mtg.MagicCard
-import at.donrobo.mtg.retrieveScryfallCard
+import at.donrobo.mtg.*
 import javafx.concurrent.Task
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
+import javafx.geometry.Pos
+import javafx.scene.Node
 import javafx.scene.control.Label
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.AnchorPane
+import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
 import javafx.scene.layout.Region
 import javafx.scene.text.Text
@@ -56,10 +57,15 @@ class CardPane {
                 colorClass = calculateColor(value.colors)
                 if (value.power != null && value.toughness != null) {
                     lblAttackDefense.style = "visibility: visible"
-                    lblAttackDefense.text = "${value.power} / ${value.toughness}"
+                    lblAttackDefense.text = "${value.power}/${value.toughness}"
                 } else {
                     lblAttackDefense.style = "visibility: hidden"
                 }
+                hbCost.children.clear()
+                hbCost.alignment = Pos.CENTER_RIGHT
+                hbCost.children.addAll(value.cost.map {
+                    symbol(it)
+                })
             }
             internalCard = value
         }
@@ -98,6 +104,8 @@ class CardPane {
     private lateinit var apCardBackground: AnchorPane
     @FXML
     private lateinit var lblAttackDefense: Label
+    @FXML
+    private lateinit var hbCost: HBox
 
     var cardName: String
         set(value) {
@@ -118,11 +126,25 @@ class CardPane {
     var cardText: String
         set(value) {
             taCardText.children.clear()
-            taCardText.children.add(Text(value))
+            taCardText.children.addAll(parseText(value))
         }
         get() {
             return taCardText.children.filter { it is Text }.map { (it as Text).text }.joinToString("")
         }
+
+    private fun parseText(value: String): List<Node> {
+        val segments = ArrayList<Node>()
+
+        var current = 0
+        for (matchResult in symbolPattern.findAll(value)) {
+            segments += Text(value.substring(current, matchResult.range.first))
+            segments += symbol(manaSymbolToCost(matchResult.groupValues[1]))
+            current = matchResult.range.last + 1
+        }
+        segments += Text(value.substring(current))
+
+        return segments
+    }
 
     var colorClass: String
         get() = if (apCardBackground.styleClass.size == 2) apCardBackground.styleClass[1] else ""

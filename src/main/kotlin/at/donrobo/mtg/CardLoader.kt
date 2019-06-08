@@ -96,72 +96,6 @@ class CardLoader(
         cards = mutableCards
     }
 
-    private fun parseCost(costString: String): List<Cost> {
-        fun manaSymbolToCost(value: String): Cost {
-            val generic = value.toIntOrNull()
-
-
-            return if (generic != null)
-                GenericCost(generic)
-            else if (value.matches(Regex(".+/.+"))) {
-                val costs = value.split("/")
-
-                if (costs.size != 2) {
-                    throw RuntimeException("Weird cost: $costs")
-                }
-
-                CombinedCost(manaSymbolToCost(costs[0]), manaSymbolToCost(costs[1]))
-            } else when (value) {
-                "U" -> BlueCost
-                "R" -> RedCost
-                "G" -> GreenCost
-                "B" -> BlackCost
-                "W" -> WhiteCost
-                "P" -> PhyrexianCost
-                "X" -> XCost
-                "Y" -> YCost
-                "Z" -> ZCost
-                "S" -> SnowCost
-                "C" -> ColorlessCost
-                "HW" -> HalfCost(WhiteCost)
-                else -> throw UnsupportedOperationException("Can't parse $value")
-            }
-        }
-
-        val cost = ArrayList<Cost>()
-
-        val pattern = Regex("\\{([^}]+)}")
-        for (match in pattern.findAll(costString)) {
-            val value = match.groupValues[1]
-            cost += manaSymbolToCost(value)
-        }
-
-        return cost
-    }
-
-
-//    private fun calculateColor(colors: List<String>): CardColor {
-//        val colorString = colors.joinToString("")
-//        return when (colorString) {
-//            "G" -> CardColor.GREEN
-//            "B" -> CardColor.BLACK
-//            "R" -> CardColor.RED
-//            "U" -> CardColor.BLUE
-//            "W" -> CardColor.WHITE
-//            "BG" -> CardColor.BLACK_GREEN
-//            "BR" -> CardColor.BLACK_RED
-//            "GR" -> CardColor.GREEN_RED
-//            "GU" -> CardColor.GREEN_BLUE
-//            "GW" -> CardColor.GREEN_WHITE
-//            "RU" -> CardColor.RED_BLUE
-//            "RW" -> CardColor.RED_WHITE
-//            "UW" -> CardColor.BLUE_WHITE
-//            "BGRUW", "BGU", "BGW", "BRU", "BGR" -> CardColor.GOLD
-//            "" -> CardColor.COLORLESS
-//            else -> throw UnsupportedOperationException("Unsupported card color: $colors")
-//        }
-//    }
-
     fun getCard(name: String): MagicCard {
         return cards.getValue(name).singleOrNull() ?: throw IllegalArgumentException("Card $name doesn't exist!")
     }
@@ -173,3 +107,46 @@ class CardLoader(
     }
 }
 
+fun manaSymbolToCost(value: String): Cost {
+    val generic = value.toIntOrNull()
+
+    return if (generic != null)
+        GenericCost(generic)
+    else if (value.matches(Regex(".+/.+"))) {
+        val costs = value.split("/")
+
+        if (costs.size != 2) {
+            throw RuntimeException("Weird cost: $costs")
+        }
+
+        CombinedCost(manaSymbolToCost(costs[0]), manaSymbolToCost(costs[1]))
+    } else when (value) {
+        "U" -> BlueCost
+        "R" -> RedCost
+        "G" -> GreenCost
+        "B" -> BlackCost
+        "W" -> WhiteCost
+        "P" -> PhyrexianCost
+        "X" -> XCost
+        "Y" -> YCost
+        "Z" -> ZCost
+        "S" -> SnowCost
+        "C" -> ColorlessCost
+        "HW" -> HalfCost(WhiteCost)
+        "T" -> TapCost
+        else -> throw UnsupportedOperationException("Can't parse $value")
+    }
+}
+
+val symbolPattern = Regex("\\{([^}]+)}")
+
+fun parseCost(costString: String): List<Cost> {
+    val cost = ArrayList<Cost>()
+
+    for (match in symbolPattern.findAll(costString)) {
+        val value = match.groupValues[1]
+        cost += manaSymbolToCost(value)
+    }
+
+    return cost
+}

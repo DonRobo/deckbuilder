@@ -59,6 +59,7 @@ enum class CardColor {
 }
 
 sealed class Cost
+
 object WhiteCost : Cost()
 object GreenCost : Cost()
 object BlueCost : Cost()
@@ -69,6 +70,7 @@ object XCost : Cost()
 object YCost : Cost()
 object ZCost : Cost()
 object SnowCost : Cost()
+object TapCost : Cost()
 object ColorlessCost : Cost()
 class CombinedCost(val cost1: Cost, val cost2: Cost) : Cost()
 class HalfCost(val cost: Cost) : Cost()
