@@ -112,4 +112,14 @@
 .attackDefense {
     -fx-background-color: #d0d0d0;
     -fx-font-size: 40;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-background-radius: 20;
+}
+
+.cardType {
+    -fx-background-color: #d0d0d0;
+    -fx-background-radius: 10;
+    -fx-font-size: 35;
+    -fx-font-weight: bold;
 }

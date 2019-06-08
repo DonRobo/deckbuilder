@@ -58,14 +58,17 @@ class CardPane {
                 if (value.power != null && value.toughness != null) {
                     lblAttackDefense.style = "visibility: visible"
                     lblAttackDefense.text = "${value.power}/${value.toughness}"
+                } else if (value.loyalty != null) {
+                    lblAttackDefense.style = "visibility: visible"
+                    lblAttackDefense.text = value.loyalty
                 } else {
                     lblAttackDefense.style = "visibility: hidden"
                 }
-                hbCost.children.clear()
                 hbCost.alignment = Pos.CENTER_RIGHT
-                hbCost.children.addAll(value.cost.map {
+                hbCost.children.setAll(value.cost.map {
                     symbol(it)
                 })
+                cardType = value.typeText
             }
             internalCard = value
         }
@@ -106,31 +109,32 @@ class CardPane {
     private lateinit var lblAttackDefense: Label
     @FXML
     private lateinit var hbCost: HBox
+    @FXML
+    private lateinit var lblCardType: Label
 
     var cardName: String
         set(value) {
             lblCardName.text = value
         }
-        get() {
-            return lblCardName.text
-        }
+        get() = lblCardName.text
 
     var art: Image
         set(value) {
             ivArt.image = value
         }
-        get() {
-            return ivArt.image
-        }
+        get() = ivArt.image
 
     var cardText: String
         set(value) {
             taCardText.children.clear()
             taCardText.children.addAll(parseText(value))
         }
-        get() {
-            return taCardText.children.filter { it is Text }.map { (it as Text).text }.joinToString("")
+        get() = taCardText.children.filter { it is Text }.joinToString("") { (it as Text).text }
+    var cardType: String
+        set(value) {
+            lblCardType.text = value
         }
+        get() = lblCardType.text
 
     private fun parseText(value: String): List<Node> {
         fun ArrayList<Node>.addText(str: String?): Boolean {

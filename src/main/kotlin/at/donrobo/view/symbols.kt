@@ -6,6 +6,7 @@ import javafx.scene.control.Label
 import javafx.scene.layout.StackPane
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
+import javafx.scene.shape.Polygon
 import javafx.scene.shape.SVGPath
 
 private const val svgSize = 600.0
@@ -22,6 +23,7 @@ fun symbol(cost: Cost): Node {
         is XCost -> genericCost("X")
         is TapCost -> tapCost()
         is ColorlessCost -> colorlessMana()
+        is CombinedCost -> combinedCost(symbol(cost.cost1), symbol(cost.cost2))
         else -> TODO("Show $cost")
     }
 }
@@ -40,6 +42,19 @@ private fun greenMana(): Node = circle(Color.web("#9bd3ae"), greenSymbol())
 private fun whiteMana(): Node = circle(Color.web("#fffbd5"), whiteSymbol())
 private fun tapCost(): Node = circle(Color.web("#cbc2bf"), tapSymbol())
 private fun colorlessMana(): Node = circle(Color.web("#ccc2c0"), colorlessSymbol())
+
+private fun combinedCost(symbol1: Node, symbol2: Node): Node {
+    val stackPane = StackPane()
+
+    val clipPoly = Polygon()
+    clipPoly.points.addAll(0.0, 0.0, symbolSize, 0.0, 0.0, symbolSize)
+
+    symbol1.clip = clipPoly
+
+    stackPane.children.setAll(symbol2, symbol1)
+
+    return stackPane
+}
 
 private fun svgSymbol(path: String, color: Color, translateX: Double = 0.0, translateY: Double = 0.0): Node {
     val svgPath = SVGPath()

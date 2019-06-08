@@ -2,7 +2,7 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.TextFlow?>
@@ -16,22 +16,22 @@
                 <Pane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                       AnchorPane.topAnchor="0.0">
                     <children>
-                        <ImageView fx:id="ivArt" fitHeight="455.0" fitWidth="604.0" layoutX="13.0" layoutY="51.0"
-                                   pickOnBounds="true" preserveRatio="true"/>
+                        <ImageView fx:id="ivArt" fitWidth="604.0" layoutX="13.0" layoutY="51.0" pickOnBounds="true"
+                                   preserveRatio="true"/>
                         <AnchorPane layoutX="13.0" layoutY="6.0" prefHeight="45.0" prefWidth="604.0"
                                     styleClass="frameHeader">
                             <children>
                                 <Label fx:id="lblCardName" prefHeight="21.0" prefWidth="432.0" styleClass="cardName"
                                        AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                        AnchorPane.topAnchor="0.0"/>
-                                <HBox fx:id="hbCost" layoutX="387.0" layoutY="-5.0" prefHeight="100.0" prefWidth="200.0"
-                                      AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                      AnchorPane.topAnchor="0.0"/>
+                                <HBox fx:id="hbCost" alignment="CENTER_RIGHT" layoutX="387.0" layoutY="-5.0"
+                                      prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
                             </children>
                             <effect>
                                 <DropShadow offsetX="-3.0" offsetY="3.0" radius="4.75">
                                     <input>
-                                        <DropShadow color="#26714a" height="1.0" radius="2.25" spread="1.0"
+                                        <DropShadow color="#707070" height="1.0" radius="2.25" spread="1.0"
                                                     width="10.0">
                                             <input>
                                                 <DropShadow height="5.0" radius="1.75" spread="1.0" width="5.0"/>
@@ -41,15 +41,30 @@
                                 </DropShadow>
                             </effect>
                         </AnchorPane>
-                        <ScrollPane layoutX="13.0" layoutY="506.0">
+                        <ScrollPane layoutX="14.0" layoutY="520.0" prefHeight="318.0" prefWidth="614.0">
                             <content>
-                                <TextFlow fx:id="taCardText" prefHeight="335.0" prefWidth="612.0"
+                                <TextFlow fx:id="taCardText" prefHeight="309.0" prefWidth="612.0"
                                           styleClass="cardText"/>
                             </content>
                         </ScrollPane>
+                        <Label fx:id="lblCardType" layoutX="14.0" layoutY="468.0" prefHeight="38.0" prefWidth="614.0"
+                               styleClass="cardType">
+                            <effect>
+                                <DropShadow color="#6b6b6b" height="10.0" radius="4.5" spread="1.0" width="10.0"/>
+                            </effect>
+                        </Label>
                         <Label fx:id="lblAttackDefense" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="514.0"
                                layoutY="809.0" prefHeight="45.0" prefWidth="110.0" styleClass="attackDefense"
-                               text="Label" textAlignment="RIGHT"/>
+                               text="Label" textAlignment="RIGHT">
+                            <effect>
+                                <DropShadow color="#434343" height="5.0" radius="2.0" spread="1.0" width="5.0">
+                                    <input>
+                                        <InnerShadow color="#6b6b6b" height="5.0" offsetX="2.0" offsetY="-2.0"
+                                                     radius="2.0" width="5.0"/>
+                                    </input>
+                                </DropShadow>
+                            </effect>
+                        </Label>
                     </children>
                 </Pane>
             </children>

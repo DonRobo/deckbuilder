@@ -39,6 +39,7 @@ class CardLoader(
                 val cost = parseCost(if (cardData.has("manaCost")) cardData["manaCost"].string else "")
                 val power = if (cardData.has("power")) cardData["power"].string else null
                 val toughness = if (cardData.has("toughness")) cardData["toughness"].string else null
+                val loyalty = if (cardData.has("loyalty")) cardData["loyalty"].string else null
                 val uuid = cardData["uuid"].string
 
                 for (language in languages) {
@@ -59,6 +60,7 @@ class CardLoader(
                                 cost = cost,
                                 power = power,
                                 toughness = toughness,
+                                loyalty = loyalty,
                                 uuid = uuid
                             )
                         )
@@ -84,6 +86,7 @@ class CardLoader(
                                     cost = cost,
                                     power = power,
                                     toughness = toughness,
+                                    loyalty = loyalty,
                                     uuid = uuid
                                 )
                             )
