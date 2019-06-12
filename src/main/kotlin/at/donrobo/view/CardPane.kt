@@ -104,7 +104,7 @@ class CardPane(val deckbuilderObject: CardDeckbuilderObject, val objectLocationP
     @FXML
     private lateinit var lblCardName: Label
     @FXML
-    private lateinit var taCardText: TextFlow
+    private lateinit var tfCardText: TextFlow
     @FXML
     private lateinit var spCardText: ScrollPane
     @FXML
@@ -134,10 +134,10 @@ class CardPane(val deckbuilderObject: CardDeckbuilderObject, val objectLocationP
 
     var cardText: String
         set(value) {
-            taCardText.children.clear()
-            taCardText.children.addAll(parseText(value))
+            tfCardText.children.clear()
+            tfCardText.children.addAll(parseText(value))
         }
-        get() = taCardText.children.filter { it is Text }.joinToString("") { (it as Text).text }
+        get() = tfCardText.children.filter { it is Text }.joinToString("") { (it as Text).text }
     var cardType: String
         set(value) {
             lblCardType.text = value

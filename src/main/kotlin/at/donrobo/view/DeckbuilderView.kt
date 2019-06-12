@@ -37,17 +37,18 @@ class DeckbuilderView(val deckbuilderCollection: CollectionDeckbuilderObject) : 
         controls.registerEventHandlers()
     }
 
-    private fun createNodeFor(
-        deckbuilderObject: DeckbuilderObject,
-        objectLocationProperty: ObjectLocationProperty
-    ): Region {
-        return when (deckbuilderObject) {
-            is CardDeckbuilderObject -> {
-                CardPane(deckbuilderObject, objectLocationProperty)
-            }
-            is CollectionDeckbuilderObject -> {
-                CardStack(deckbuilderObject, objectLocationProperty)
-            }
+}
+
+fun createNodeFor(
+    deckbuilderObject: DeckbuilderObject,
+    objectLocationProperty: ObjectLocationProperty
+): Region {
+    return when (deckbuilderObject) {
+        is CardDeckbuilderObject -> {
+            CardPane(deckbuilderObject, objectLocationProperty)
+        }
+        is CollectionDeckbuilderObject -> {
+            CardStack(deckbuilderObject, objectLocationProperty)
         }
     }
 }

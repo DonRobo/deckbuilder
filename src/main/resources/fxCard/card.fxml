@@ -45,7 +45,7 @@
                             <ScrollPane fx:id="spCardText" layoutX="14.0" layoutY="520.0" prefHeight="318.0"
                                         prefWidth="614.0">
                                 <content>
-                                    <TextFlow fx:id="taCardText" prefHeight="309.0" prefWidth="612.0"
+                                    <TextFlow fx:id="tfCardText" prefHeight="309.0" prefWidth="612.0"
                                               styleClass="cardText"/>
                                 </content>
                             </ScrollPane>
