@@ -26,8 +26,8 @@ data class ScryfallCard(
     val imageUris: ScryfallImageUris
 )
 
-private fun loadCard(cardname: String): ScryfallCard {
-    return gson.fromJson(Unirest.get("$scryfallApiBase/cards/named").queryString("exact", cardname).asString().body)
+private fun loadCard(cardName: String): ScryfallCard {
+    return gson.fromJson(Unirest.get("$scryfallApiBase/cards/named").queryString("exact", cardName).asString().body)
 }
 
 fun main() {
