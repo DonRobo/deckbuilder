@@ -43,7 +43,7 @@ class DeckbuilderView(val deckbuilderCollection: CollectionDeckbuilderObject) : 
     ): Region {
         val node = when (deckbuilderObject) {
             is CardDeckbuilderObject -> {
-                CardPane.setUpCardNode(deckbuilderObject.card)
+                CardPane(deckbuilderObject)
             }
             is CollectionDeckbuilderObject -> {
                 CardStack(deckbuilderObject) //TODO

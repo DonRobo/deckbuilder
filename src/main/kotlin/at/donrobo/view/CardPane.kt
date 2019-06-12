@@ -1,5 +1,6 @@
 package at.donrobo.view
 
+import at.donrobo.model.CardDeckbuilderObject
 import at.donrobo.mtg.*
 import javafx.concurrent.Task
 import javafx.fxml.FXML
@@ -12,12 +13,12 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
-import javafx.scene.layout.Region
 import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
 import javafx.scene.transform.Scale
 import org.apache.commons.io.IOUtils
 import java.io.File
+import java.io.IOException
 import java.net.URL
 import java.util.concurrent.Executors
 
@@ -25,7 +26,7 @@ private val executor = Executors.newSingleThreadExecutor { r: Runnable -> Thread
 
 const val cardSizeRatio = 63.0 / 88.0
 
-class CardPane {
+class CardPane(val deckbuilderObject: CardDeckbuilderObject) : Pane() {
 
     private var internalCard: MagicCard? = null
     private val artCache = File("artCache")
@@ -171,31 +172,35 @@ class CardPane {
         }
 
     private val cardDefaultWidth = 672.0
+    private val cardDefaultHeight get() = cardDefaultWidth / cardSizeRatio
 
-    companion object {
-        fun setUpCardNode(card: MagicCard): Region {
-            val loader = FXMLLoader(CardPane::class.java.getResource("/fxCard/card.fxml"))
-            val root: Region = loader.load()
+    init {
+        val loader = FXMLLoader(this::class.java.getResource("/fxCard/card.fxml"))
+        loader.setRoot(this)
+        loader.setController(this)
 
-            val scaler = Pane(root)
-            val controller = loader.getController<CardPane>()
-            scaler.prefHeightProperty()
-                .bind(scaler.prefWidthProperty().multiply(1.0 / cardSizeRatio))
-            scaler.minWidthProperty().bind(scaler.prefWidthProperty())
-            scaler.maxWidthProperty().bind(scaler.prefWidthProperty())
-            scaler.minHeightProperty().bind(scaler.prefHeightProperty())
-            scaler.maxHeightProperty().bind(scaler.prefHeightProperty())
-
-            val scaleTransform = Scale()
-
-            root.transforms.add(scaleTransform)
-
-            scaleTransform.xProperty().bindBidirectional(scaleTransform.yProperty())
-            scaleTransform.xProperty().bind(scaler.widthProperty().divide(controller.cardDefaultWidth))
-
-            controller.card = card
-
-            return scaler
+        try {
+            loader.load<CardPane>()
+        } catch (ex: IOException) {
+            throw RuntimeException(ex)
         }
     }
+
+    @FXML
+    fun initialize() {
+        card = deckbuilderObject.card
+
+        minWidthProperty().bind(prefWidthProperty())
+        maxWidthProperty().bind(prefWidthProperty())
+        minHeightProperty().bind(prefHeightProperty())
+        maxHeightProperty().bind(prefHeightProperty())
+
+        prefHeightProperty().bind(prefWidthProperty().divide(cardSizeRatio))
+        val scaleTransform = Scale()
+
+        apCardContainer.transforms.add(scaleTransform)
+        scaleTransform.xProperty().bindBidirectional(scaleTransform.yProperty())
+        scaleTransform.xProperty().bind(widthProperty().divide(apCardContainer.widthProperty()))
+    }
+
 }

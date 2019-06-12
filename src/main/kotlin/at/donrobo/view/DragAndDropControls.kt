@@ -57,6 +57,7 @@ class DragAndDropControls(
                     droppedOnDBObject.addObject(draggingObject.deckbuilderObject)
                 }
                 is CardDeckbuilderObject -> {
+                    //TODO only if this is not a collection
                     deckbuilderCollection.removeObject(droppedOnDBObject)
                     deckbuilderCollection.removeObject(draggingObject.deckbuilderObject)
 

@@ -26,6 +26,8 @@ fun symbol(cost: Cost): Node {
         is CombinedCost -> combinedCost(symbol(cost.cost1), symbol(cost.cost2))
         is EnergyCost -> genericCost("E")
         is PhyrexianCost -> genericCost("P")
+        is ChaosCost -> genericCost("C")
+        is UntapCost -> genericCost("U")
         else -> TODO("Show $cost")
     }
 }

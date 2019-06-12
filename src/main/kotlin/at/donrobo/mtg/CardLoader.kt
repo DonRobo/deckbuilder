@@ -139,6 +139,7 @@ fun manaSymbolToCost(value: String): Cost {
         "T" -> TapCost
         "CHAOS" -> ChaosCost
         "E" -> EnergyCost
+        "Q" -> UntapCost
         else -> throw UnsupportedOperationException("Can't parse $value")
     }
 }

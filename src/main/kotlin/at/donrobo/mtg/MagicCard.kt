@@ -77,6 +77,7 @@ object ColorlessCost : Cost()
 class CombinedCost(val cost1: Cost, val cost2: Cost) : Cost()
 class HalfCost(val cost: Cost) : Cost()
 object PhyrexianCost : Cost()
+object UntapCost : Cost()
 
 data class MagicCard(
     val originalName: String,
