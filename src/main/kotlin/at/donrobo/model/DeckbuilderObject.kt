@@ -126,7 +126,7 @@ class CollectionDeckbuilderObject() : DeckbuilderObject() {
     }
 
     private fun addObject(positionedObject: DeckbuilderObjectNode) {
-        addObject(positionedObject.deckbuilderObject, positionedObject.cardLocationProperty)
+        addObject(positionedObject.deckbuilderObject, positionedObject.objectLocationProperty)
     }
 
     fun removeObject(deckbuilderObject: DeckbuilderObject): CardLocationProperty? {

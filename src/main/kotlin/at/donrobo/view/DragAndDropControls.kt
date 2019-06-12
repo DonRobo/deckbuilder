@@ -1,5 +1,6 @@
 package at.donrobo.view
 
+import at.donrobo.model.CardDeckbuilderObject
 import at.donrobo.model.CollectionDeckbuilderObject
 import javafx.event.EventHandler
 import javafx.geometry.Point2D
@@ -22,7 +23,7 @@ class DragAndDropControls(
             val target = objectAt(mousePosition)
             if (target != null) {
                 mouseStartPoint = mousePosition
-                draggingObjectStartPoint = Point2D(target.cardLocationProperty.x, target.cardLocationProperty.y)
+                draggingObjectStartPoint = Point2D(target.objectLocationProperty.x, target.objectLocationProperty.y)
                 draggingObject = target
                 target.node.toFront()
                 event.consume()
@@ -36,8 +37,8 @@ class DragAndDropControls(
             val draggingObjectStartPoint = this.draggingObjectStartPoint ?: return@EventHandler
             val draggingObjectPosition = this.draggingObject ?: return@EventHandler
 
-            draggingObjectPosition.cardLocationProperty.x = (event.x - mouseStartPoint.x) + draggingObjectStartPoint.x
-            draggingObjectPosition.cardLocationProperty.y = (event.y - mouseStartPoint.y) + draggingObjectStartPoint.y
+            draggingObjectPosition.objectLocationProperty.x = (event.x - mouseStartPoint.x) + draggingObjectStartPoint.x
+            draggingObjectPosition.objectLocationProperty.y = (event.y - mouseStartPoint.y) + draggingObjectStartPoint.y
             event.consume()
         }
     }
@@ -55,23 +56,23 @@ class DragAndDropControls(
                     deckbuilderCollection.removeObject(draggingObject.deckbuilderObject)
                     droppedOnDBObject.addObject(draggingObject.deckbuilderObject)
                 }
-//                is CardDeckbuilderObject -> {
-//                    deckbuilderCollection.removeObject(droppedOn.deckbuilderObject)
-//                    deckbuilderCollection.removeObject(draggingObject.deckbuilderObject)
-//
-//                    val collectionDeckbuilderObject=CollectionDeckbuilderObject()
-//                    collectionDeckbuilderObject.addObject(droppedOn.deckbuilderObject)
-//                    collectionDeckbuilderObject.addObject(draggingObject.deckbuilderObject)
-//
-//                    deckbuilderCollection.addObject(collectionDeckbuilderObject, droppedOn.cardLocationProperty)
-//                }
+                is CardDeckbuilderObject -> {
+                    deckbuilderCollection.removeObject(droppedOnDBObject)
+                    deckbuilderCollection.removeObject(draggingObject.deckbuilderObject)
+
+                    val collectionDeckbuilderObject = CollectionDeckbuilderObject()
+                    collectionDeckbuilderObject.addObject(droppedOnDBObject)
+                    collectionDeckbuilderObject.addObject(draggingObject.deckbuilderObject)
+
+                    deckbuilderCollection.addObject(collectionDeckbuilderObject, droppedOn.objectLocationProperty)
+                }
             }
             event.consume()
         }
     }
 
     private fun objectAt(mousePosition: Point2D, except: DeckbuilderObjectNode? = null): DeckbuilderObjectNode? {
-        return deckbuilderObjectNodes.filter { it != except && it.cardLocationProperty.bounds.contains(mousePosition) }
+        return deckbuilderObjectNodes.filter { it != except && it.objectLocationProperty.bounds.contains(mousePosition) }
             .maxBy { it.node.parent.childrenUnmodifiable.indexOf(it.node) }
     }
 
