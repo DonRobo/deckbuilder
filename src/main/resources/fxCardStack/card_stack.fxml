@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.Pane?>
-<fx:root prefHeight="500.0" prefWidth="500.0" styleClass="cardStack" stylesheets="@card_stack.css"
-         type="javafx.scene.layout.Pane" xmlns="http://javafx.com/javafx/8.0.172-ea"
-         xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.scene.layout.AnchorPane?>
+<fx:root prefHeight="500.0" prefWidth="500.0" styleClass="cardStack" stylesheets="@card_stack.css" type="AnchorPane"
+         xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Label fx:id="lblTest" layoutX="236.0" layoutY="242.0" text="Label"/>
+        <Label styleClass="stackLabel" text="Label" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0"/>
     </children>
 </fx:root>

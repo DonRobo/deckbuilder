@@ -28,11 +28,10 @@ class CardShower : Application() {
 
         stage.show()
 
-        val cardSize = 250.0
-        collection.addObject(CardDeckbuilderObject(cardLoader.getCard("Wildgrowth Walker")), cardSize = cardSize)
+        collection.addObject(CardDeckbuilderObject(cardLoader.getCard("Wildgrowth Walker")))
         myRoot.addEventFilter(MouseEvent.MOUSE_CLICKED) {
             if (it.button == MouseButton.SECONDARY) {
-                collection.addObject(CardDeckbuilderObject(cardLoader.randomCard()), cardSize = cardSize)
+                collection.addObject(CardDeckbuilderObject(cardLoader.randomCard()))
                 it.consume()
             }
         }

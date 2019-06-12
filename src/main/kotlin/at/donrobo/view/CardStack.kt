@@ -1,13 +1,16 @@
 package at.donrobo.view
 
 import at.donrobo.model.CollectionDeckbuilderObject
+import at.donrobo.model.ObjectLocationProperty
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
-import javafx.scene.control.Label
-import javafx.scene.layout.Pane
+import javafx.scene.layout.AnchorPane
 import java.io.IOException
 
-class CardStack(val deckbuilderObject: CollectionDeckbuilderObject) : Pane() {
+class CardStack(
+    val deckbuilderObject: CollectionDeckbuilderObject,
+    val objectLocationProperty: ObjectLocationProperty
+) : AnchorPane() {
 
     init {
         val loader = FXMLLoader(this::class.java.getResource("/fxCardStack/card_stack.fxml"))
@@ -22,10 +25,12 @@ class CardStack(val deckbuilderObject: CollectionDeckbuilderObject) : Pane() {
     }
 
     @FXML
-    lateinit var lblTest: Label
-
-    @FXML
     fun initialize() {
-        lblTest.text = "Initialized"
+        prefWidthProperty().bindBidirectional(objectLocationProperty.widthProperty)
+        prefHeightProperty().bindBidirectional(objectLocationProperty.heightProperty)
+        layoutXProperty().bindBidirectional(objectLocationProperty.xProperty)
+        layoutYProperty().bindBidirectional(objectLocationProperty.yProperty)
+
+        ResizeControls(DeckbuilderObjectNode(deckbuilderObject, objectLocationProperty, this)).registerEventHandlers()
     }
 }

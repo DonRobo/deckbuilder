@@ -4,7 +4,6 @@ import at.donrobo.mtg.MagicCard
 import at.donrobo.view.DeckbuilderObjectNode
 import at.donrobo.view.cardSizeRatio
 import javafx.beans.property.DoubleProperty
-import javafx.beans.property.ReadOnlyDoubleProperty
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.geometry.BoundingBox
 import java.io.Serializable
@@ -14,14 +13,16 @@ import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.sqrt
 
-data class CardLocationProperty(
+data class ObjectLocationProperty(
     val xProperty: DoubleProperty, val yProperty: DoubleProperty,
-    val widthProperty: DoubleProperty = SimpleDoubleProperty(400.0)
+    val widthProperty: DoubleProperty,
+    val heightProperty: DoubleProperty
 ) {
-    constructor(x: Double, y: Double, width: Double = 400.0) : this(
+    constructor(x: Double, y: Double, width: Double, height: Double) : this(
         SimpleDoubleProperty(x),
         SimpleDoubleProperty(y),
-        SimpleDoubleProperty(width)
+        SimpleDoubleProperty(width),
+        SimpleDoubleProperty(height)
     )
 
     var x: Double
@@ -40,12 +41,11 @@ data class CardLocationProperty(
         set(value) {
             widthProperty.value = value
         }
-    val heightProperty: ReadOnlyDoubleProperty =
-        SimpleDoubleProperty.readOnlyDoubleProperty(
-            SimpleDoubleProperty().apply { bind(widthProperty.divide(cardSizeRatio)) }
-        )
-    val height: Double
+    var height: Double
         get() = heightProperty.value
+        set(value) {
+            heightProperty.value = value
+        }
 
     val bounds: BoundingBox get() = BoundingBox(x, y, width, height)
 }
@@ -65,11 +65,21 @@ sealed class DeckbuilderObject : Serializable {
     override fun hashCode(): Int {
         return uuid.hashCode()
     }
+
+    abstract val defaultWidth: Double
+    abstract val defaultHeight: Double
 }
 
-data class CardDeckbuilderObject(val card: MagicCard) : DeckbuilderObject()
+data class CardDeckbuilderObject(
+    val card: MagicCard,
+    override val defaultWidth: Double = 250.0,
+    override val defaultHeight: Double = defaultWidth / cardSizeRatio
+) : DeckbuilderObject()
 
-class CollectionDeckbuilderObject() : DeckbuilderObject() {
+class CollectionDeckbuilderObject(
+    override val defaultWidth: Double = 300.0,
+    override val defaultHeight: Double = defaultWidth / cardSizeRatio
+) : DeckbuilderObject() {
     constructor(
         initialObjects: List<DeckbuilderObjectNode>,
         cardsSideBySide: Int = max(5, ceil(sqrt(initialObjects.size.toDouble())).toInt())
@@ -78,22 +88,26 @@ class CollectionDeckbuilderObject() : DeckbuilderObject() {
         initialObjects.forEach { addObject(it) }
     }
 
-    private val objectAddedListeners: MutableList<(DeckbuilderObject, CardLocationProperty) -> Unit> = LinkedList()
+    private val objectAddedListeners: MutableList<(DeckbuilderObject, ObjectLocationProperty) -> Unit> = LinkedList()
     private val objectRemovedListeners: MutableList<(DeckbuilderObject) -> Unit> = LinkedList()
 
-    private val internalDeckbuilderObjects: MutableMap<DeckbuilderObject, CardLocationProperty> = HashMap()
+    private val internalDeckbuilderObjects: MutableMap<DeckbuilderObject, ObjectLocationProperty> = HashMap()
 
     var cardsSideBySide: Int = 5
     var gapSize: Double = 30.0
 
-    val deckbuilderObjects: Map<DeckbuilderObject, CardLocationProperty> get() = internalDeckbuilderObjects
+    val deckbuilderObjects: Map<DeckbuilderObject, ObjectLocationProperty> get() = internalDeckbuilderObjects
 
-    fun addObject(deckbuilderObject: DeckbuilderObject, cardSize: Double? = null) {
+    fun addObject(
+        deckbuilderObject: DeckbuilderObject,
+        widthProperty: DoubleProperty = SimpleDoubleProperty(deckbuilderObject.defaultWidth),
+        heightProperty: DoubleProperty = SimpleDoubleProperty(deckbuilderObject.defaultHeight)
+    ) {
         var maxYInRow = 0.0
         var xIndex = 0
 
         val locationProperty =
-            if (cardSize != null) CardLocationProperty(0.0, 0.0, cardSize) else CardLocationProperty(0.0, 0.0)
+            ObjectLocationProperty(SimpleDoubleProperty(0.0), SimpleDoubleProperty(0.0), widthProperty, heightProperty)
         var intersections = getObjectsIntersecting(locationProperty)
         while (intersections.isNotEmpty()) {
             maxYInRow = max(maxYInRow, intersections.map { it.second.bounds.maxY }.max()!!)
@@ -113,23 +127,23 @@ class CollectionDeckbuilderObject() : DeckbuilderObject() {
         addObject(deckbuilderObject, locationProperty)
     }
 
-    fun getObjectsIntersecting(locationProperty: CardLocationProperty): List<Pair<DeckbuilderObject, CardLocationProperty>> =
+    fun getObjectsIntersecting(locationProperty: ObjectLocationProperty): List<Pair<DeckbuilderObject, ObjectLocationProperty>> =
         deckbuilderObjects.filter { it.value.bounds.intersects(locationProperty.bounds) }.map { it.toPair() }
 
-    fun getObjectsAt(x: Double, y: Double): List<Pair<DeckbuilderObject, CardLocationProperty>> =
+    fun getObjectsAt(x: Double, y: Double): List<Pair<DeckbuilderObject, ObjectLocationProperty>> =
         deckbuilderObjects.filter { it.value.bounds.contains(x, y) }.map { it.toPair() }
 
-    fun addObject(deckbuilderObject: DeckbuilderObject, cardLocationProperty: CardLocationProperty) {
-        internalDeckbuilderObjects[deckbuilderObject] = cardLocationProperty
+    fun addObject(deckbuilderObject: DeckbuilderObject, objectLocationProperty: ObjectLocationProperty) {
+        internalDeckbuilderObjects[deckbuilderObject] = objectLocationProperty
 
-        objectAddedListeners.forEach { it(deckbuilderObject, cardLocationProperty) }
+        objectAddedListeners.forEach { it(deckbuilderObject, objectLocationProperty) }
     }
 
-    private fun addObject(positionedObject: DeckbuilderObjectNode) {
-        addObject(positionedObject.deckbuilderObject, positionedObject.objectLocationProperty)
+    fun addObject(deckbuilderObjectNode: DeckbuilderObjectNode) {
+        addObject(deckbuilderObjectNode.deckbuilderObject, deckbuilderObjectNode.objectLocationProperty)
     }
 
-    fun removeObject(deckbuilderObject: DeckbuilderObject): CardLocationProperty? {
+    fun removeObject(deckbuilderObject: DeckbuilderObject): ObjectLocationProperty? {
         val returnValue = internalDeckbuilderObjects.remove(deckbuilderObject)
 
         if (returnValue != null)
@@ -138,7 +152,7 @@ class CollectionDeckbuilderObject() : DeckbuilderObject() {
         return returnValue
     }
 
-    fun addObjectAddedListener(listener: (DeckbuilderObject, CardLocationProperty) -> Unit) {
+    fun addObjectAddedListener(listener: (DeckbuilderObject, ObjectLocationProperty) -> Unit) {
         objectAddedListeners += listener
     }
 
@@ -146,7 +160,7 @@ class CollectionDeckbuilderObject() : DeckbuilderObject() {
         objectRemovedListeners += listener
     }
 
-    fun removeObjectAddedListener(listener: (DeckbuilderObject, CardLocationProperty) -> Unit) {
+    fun removeObjectAddedListener(listener: (DeckbuilderObject, ObjectLocationProperty) -> Unit) {
         objectAddedListeners -= listener
     }
 

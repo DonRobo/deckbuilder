@@ -1,6 +1,7 @@
 package at.donrobo.view
 
 import at.donrobo.model.CardDeckbuilderObject
+import at.donrobo.model.ObjectLocationProperty
 import at.donrobo.mtg.*
 import javafx.concurrent.Task
 import javafx.fxml.FXML
@@ -26,7 +27,8 @@ private val executor = Executors.newSingleThreadExecutor { r: Runnable -> Thread
 
 const val cardSizeRatio = 63.0 / 88.0
 
-class CardPane(val deckbuilderObject: CardDeckbuilderObject) : Pane() {
+class CardPane(val deckbuilderObject: CardDeckbuilderObject, val objectLocationProperty: ObjectLocationProperty) :
+    Pane() {
 
     private var internalCard: MagicCard? = null
     private val artCache = File("artCache")
@@ -201,6 +203,11 @@ class CardPane(val deckbuilderObject: CardDeckbuilderObject) : Pane() {
         apCardContainer.transforms.add(scaleTransform)
         scaleTransform.xProperty().bindBidirectional(scaleTransform.yProperty())
         scaleTransform.xProperty().bind(widthProperty().divide(apCardContainer.widthProperty()))
+
+        prefWidthProperty().bindBidirectional(objectLocationProperty.widthProperty)
+        objectLocationProperty.heightProperty.bind(prefHeightProperty())
+        layoutXProperty().bindBidirectional(objectLocationProperty.xProperty)
+        layoutYProperty().bindBidirectional(objectLocationProperty.yProperty)
     }
 
 }

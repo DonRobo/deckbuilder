@@ -1,16 +1,16 @@
 package at.donrobo.view
 
 import at.donrobo.model.CardDeckbuilderObject
-import at.donrobo.model.CardLocationProperty
 import at.donrobo.model.CollectionDeckbuilderObject
 import at.donrobo.model.DeckbuilderObject
+import at.donrobo.model.ObjectLocationProperty
 import javafx.scene.Node
 import javafx.scene.layout.Pane
 import javafx.scene.layout.Region
 
 data class DeckbuilderObjectNode(
     val deckbuilderObject: DeckbuilderObject,
-    val objectLocationProperty: CardLocationProperty,
+    val objectLocationProperty: ObjectLocationProperty,
     val node: Node
 )
 
@@ -19,10 +19,10 @@ class DeckbuilderView(val deckbuilderCollection: CollectionDeckbuilderObject) : 
     private val deckbuilderObjectNodes: MutableList<DeckbuilderObjectNode> = ArrayList()
 
     init {
-        deckbuilderCollection.addObjectAddedListener { deckbuilderObject: DeckbuilderObject, cardLocationProperty: CardLocationProperty ->
-            val node = createNodeFor(deckbuilderObject, cardLocationProperty)
+        deckbuilderCollection.addObjectAddedListener { deckbuilderObject: DeckbuilderObject, objectLocationProperty: ObjectLocationProperty ->
+            val node = createNodeFor(deckbuilderObject, objectLocationProperty)
             children.add(node)
-            deckbuilderObjectNodes.add(DeckbuilderObjectNode(deckbuilderObject, cardLocationProperty, node))
+            deckbuilderObjectNodes.add(DeckbuilderObjectNode(deckbuilderObject, objectLocationProperty, node))
         }
 
         deckbuilderCollection.addObjectRemovedListener { deckbuilderObject: DeckbuilderObject ->
@@ -39,19 +39,15 @@ class DeckbuilderView(val deckbuilderCollection: CollectionDeckbuilderObject) : 
 
     private fun createNodeFor(
         deckbuilderObject: DeckbuilderObject,
-        cardLocationProperty: CardLocationProperty
+        objectLocationProperty: ObjectLocationProperty
     ): Region {
-        val node = when (deckbuilderObject) {
+        return when (deckbuilderObject) {
             is CardDeckbuilderObject -> {
-                CardPane(deckbuilderObject)
+                CardPane(deckbuilderObject, objectLocationProperty)
             }
             is CollectionDeckbuilderObject -> {
-                CardStack(deckbuilderObject) //TODO
+                CardStack(deckbuilderObject, objectLocationProperty)
             }
         }
-        node.layoutXProperty().bindBidirectional(cardLocationProperty.xProperty)
-        node.layoutYProperty().bindBidirectional(cardLocationProperty.yProperty)
-        node.prefWidthProperty().bind(cardLocationProperty.widthProperty)
-        return node
     }
 }

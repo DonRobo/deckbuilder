@@ -49,16 +49,14 @@
                                 </content>
                             </ScrollPane>
                             <Label fx:id="lblCardType" layoutX="14.0" layoutY="468.0" prefHeight="38.0"
-                                   prefWidth="614.0"
-                                   styleClass="cardType">
+                                   prefWidth="614.0" styleClass="cardType">
                                 <effect>
                                     <DropShadow color="#6b6b6b" height="10.0" radius="4.5" spread="1.0" width="10.0"/>
                                 </effect>
                             </Label>
                             <Label fx:id="lblAttackDefense" alignment="CENTER_RIGHT" contentDisplay="RIGHT"
-                                   layoutX="514.0"
-                                   layoutY="809.0" prefHeight="45.0" prefWidth="110.0" styleClass="attackDefense"
-                                   text="Label" textAlignment="RIGHT">
+                                   layoutX="514.0" layoutY="809.0" prefHeight="45.0" prefWidth="110.0"
+                                   styleClass="attackDefense" text="Label" textAlignment="RIGHT">
                                 <effect>
                                     <DropShadow color="#434343" height="5.0" radius="2.0" spread="1.0" width="5.0">
                                         <input>
