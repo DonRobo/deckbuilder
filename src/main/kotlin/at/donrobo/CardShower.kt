@@ -2,12 +2,12 @@ package at.donrobo
 
 import at.donrobo.model.CardDeckbuilderObject
 import at.donrobo.model.CollectionDeckbuilderObject
-import at.donrobo.model.PositionProperty
 import at.donrobo.mtg.CardLoader
 import at.donrobo.mtg.Language
 import at.donrobo.view.DeckbuilderView
 import javafx.application.Application
 import javafx.scene.Scene
+import javafx.scene.control.ScrollPane
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.stage.Stage
@@ -18,24 +18,29 @@ class CardShower : Application() {
     override fun start(stage: Stage) {
         val collection = CollectionDeckbuilderObject()
         val myRoot = DeckbuilderView(collection)
+        val scrollPane = ScrollPane(myRoot)
+        scrollPane.isPannable = true
 
         stage.title = "CardShower"
-        stage.scene = Scene(myRoot)
+        stage.scene = Scene(scrollPane)
+        stage.width = 1000.0
+        stage.height = 800.0
 
         stage.show()
 
-        val position = PositionProperty(100.0, 0.0)
-        collection.addObject(CardDeckbuilderObject(cardLoader.getCard("History of Benalia")), position)
-        myRoot.addEventHandler(MouseEvent.MOUSE_CLICKED) {
+        val cardSize = 250.0
+        collection.addObject(CardDeckbuilderObject(cardLoader.getCard("Wildgrowth Walker")), cardSize = cardSize)
+        myRoot.addEventFilter(MouseEvent.MOUSE_CLICKED) {
             if (it.button == MouseButton.SECONDARY) {
-                collection.addObject(CardDeckbuilderObject(cardLoader.randomCard()), PositionProperty(it.x, it.y))
+                collection.addObject(CardDeckbuilderObject(cardLoader.randomCard()), cardSize = cardSize)
+                it.consume()
             }
         }
-        myRoot.addEventHandler(MouseEvent.MOUSE_DRAGGED) {
-            if (it.button == MouseButton.SECONDARY) {
-                collection.addObject(CardDeckbuilderObject(cardLoader.randomCard()), PositionProperty(it.x, it.y))
-            }
-        }
+//        myRoot.addEventHandler(MouseEvent.MOUSE_DRAGGED) {
+//            if (it.button == MouseButton.SECONDARY) {
+//                collection.addObject(CardDeckbuilderObject(cardLoader.randomCard()))
+//            }
+//        }
     }
 }
 

@@ -23,6 +23,8 @@ import java.util.concurrent.Executors
 
 private val executor = Executors.newSingleThreadExecutor { r: Runnable -> Thread(r).apply { isDaemon = true } }
 
+const val cardSizeRatio = 63.0 / 88.0
+
 class CardPane {
 
     private var internalCard: MagicCard? = null
@@ -168,7 +170,6 @@ class CardPane {
             apCardBackground.styleClass.add(value)
         }
 
-    private val cardRatio = 63.0 / 88.0
     private val cardDefaultWidth = 672.0
 
     companion object {
@@ -179,7 +180,7 @@ class CardPane {
             val scaler = Pane(root)
             val controller = loader.getController<CardPane>()
             scaler.prefHeightProperty()
-                .bind(scaler.prefWidthProperty().multiply(1.0 / controller.cardRatio))
+                .bind(scaler.prefWidthProperty().multiply(1.0 / cardSizeRatio))
             scaler.minWidthProperty().bind(scaler.prefWidthProperty())
             scaler.maxWidthProperty().bind(scaler.prefWidthProperty())
             scaler.minHeightProperty().bind(scaler.prefHeightProperty())

@@ -24,6 +24,8 @@ fun symbol(cost: Cost): Node {
         is TapCost -> tapCost()
         is ColorlessCost -> colorlessMana()
         is CombinedCost -> combinedCost(symbol(cost.cost1), symbol(cost.cost2))
+        is EnergyCost -> genericCost("E")
+        is PhyrexianCost -> genericCost("P")
         else -> TODO("Show $cost")
     }
 }
