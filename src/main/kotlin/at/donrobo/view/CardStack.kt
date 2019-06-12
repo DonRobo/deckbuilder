@@ -36,10 +36,12 @@ class CardStack(
         title = "${deckbuilderObject.deckbuilderObjects.size} cards in this stack"
     }
 
-    private fun addCard(newObj: DeckbuilderObject) {
+    private fun addCard(cardObj: DeckbuilderObject) {
         val location = ObjectLocationProperty(0.0, 0.0, 50.0, 50.0 / cardSizeRatio)
-        val node = createNodeFor(newObj, location)
-        cardNodes[newObj] = node
+        val node = createNodeFor(cardObj, location)
+        val dndControls = StackDragAndDropControls(this, cardObj, node)
+        dndControls.registerEventHandlers()
+        cardNodes[cardObj] = node
         fpCards.children.add(node)
     }
 

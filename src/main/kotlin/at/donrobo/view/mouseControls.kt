@@ -2,6 +2,7 @@ package at.donrobo.view
 
 import at.donrobo.model.CardDeckbuilderObject
 import at.donrobo.model.CollectionDeckbuilderObject
+import at.donrobo.model.DeckbuilderObject
 import at.donrobo.model.ObjectLocationProperty
 import javafx.event.EventHandler
 import javafx.geometry.Point2D
@@ -11,6 +12,8 @@ import javafx.scene.layout.Region
 
 private val MouseEvent.mousePosition: Point2D
     get() = Point2D(this.x, this.y)
+private val MouseEvent.sceneMousePosition: Point2D
+    get() = Point2D(this.sceneX, this.sceneY)
 
 class ResizeControls(val deckbuilderObjectNode: DeckbuilderObjectNode) {
 
@@ -62,6 +65,70 @@ class ResizeControls(val deckbuilderObjectNode: DeckbuilderObjectNode) {
         deckbuilderObjectNode.node.addEventHandler(MouseEvent.MOUSE_DRAGGED, draggedListener)
         deckbuilderObjectNode.node.addEventHandler(MouseEvent.MOUSE_RELEASED, releasedListener)
     }
+}
+
+class StackDragAndDropControls(val cardStack: CardStack, val cardObj: DeckbuilderObject, val node: Region) {
+    private var startPosition: Point2D? = null
+    private var draggingNode: Region? = null
+
+    private val outside: DeckbuilderView get() = cardStack.parent as DeckbuilderView
+
+    private val pressedListener: EventHandler<in MouseEvent> = EventHandler { event ->
+        if (event.button == MouseButton.PRIMARY) {
+            startPosition = event.sceneMousePosition
+            draggingNode = null
+        }
+    }
+
+    private val draggedListener: EventHandler<in MouseEvent> = EventHandler { event ->
+        val startPosition = startPosition
+        if (event.button == MouseButton.PRIMARY && startPosition != null) {
+            if (draggingNode == null) {
+                node.isVisible = false
+                draggingNode = createNodeFor(cardObj, ObjectLocationProperty(0.0, 0.0, node.width, node.height))
+                outside.children.add(draggingNode)
+            }
+            val pointOutside = outside.screenToLocal(
+                event.screenX - node.width / 2.0,
+                event.screenY - node.height / 2.0
+            )
+            draggingNode?.translateX = pointOutside.x
+            draggingNode?.translateY = pointOutside.y
+        }
+    }
+
+    private val releasedListener: EventHandler<in MouseEvent> = EventHandler { event ->
+        if (event.button == MouseButton.PRIMARY) {
+            startPosition = null
+            outside.children.remove(draggingNode)
+            draggingNode = null
+            node.isVisible = true
+
+            val bounds = cardStack.boundsInParent
+            val pointOutside = outside.screenToLocal(
+                event.screenX,
+                event.screenY
+            )
+            if (!bounds.contains(pointOutside)) {
+                cardStack.deckbuilderObject.removeObject(cardObj)
+                val location =
+                    ObjectLocationProperty(
+                        pointOutside.x - cardObj.defaultWidth / 2.0,
+                        pointOutside.y - cardObj.defaultHeight / 2.0,
+                        cardObj.defaultWidth,
+                        cardObj.defaultHeight
+                    )
+                outside.deckbuilderCollection.addObject(cardObj, location)
+            }
+        }
+    }
+
+    fun registerEventHandlers() {
+        node.addEventHandler(MouseEvent.MOUSE_PRESSED, pressedListener)
+        node.addEventHandler(MouseEvent.MOUSE_DRAGGED, draggedListener)
+        node.addEventHandler(MouseEvent.MOUSE_RELEASED, releasedListener)
+    }
+
 }
 
 class DragAndDropControls(
