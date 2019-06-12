@@ -108,27 +108,35 @@ class DragAndDropControls(
             draggingObjectStartPoint = null
             when (val droppedOnDBObject = droppedOn?.deckbuilderObject) {
                 is CollectionDeckbuilderObject -> {
-                    deckbuilderCollection.removeObject(draggingObject.deckbuilderObject)
-                    droppedOnDBObject.addObject(draggingObject.deckbuilderObject)
+                    if (draggingObject.deckbuilderObject is CardDeckbuilderObject) {
+                        deckbuilderCollection.removeObject(draggingObject.deckbuilderObject)
+                        droppedOnDBObject.addObject(draggingObject.deckbuilderObject)
+                    } else if (draggingObject.deckbuilderObject is CollectionDeckbuilderObject) {
+                        deckbuilderCollection.removeObject(draggingObject.deckbuilderObject)
+                        draggingObject.deckbuilderObject.deckbuilderObjects.keys.forEach {
+                            droppedOnDBObject.addObject(it)
+                        }
+                    }
                 }
                 is CardDeckbuilderObject -> {
-                    //TODO only if this is not a collection
-                    deckbuilderCollection.removeObject(droppedOnDBObject)
-                    deckbuilderCollection.removeObject(draggingObject.deckbuilderObject)
+                    if (draggingObject.deckbuilderObject is CardDeckbuilderObject) {
+                        deckbuilderCollection.removeObject(droppedOnDBObject)
+                        deckbuilderCollection.removeObject(draggingObject.deckbuilderObject)
 
-                    val collectionDeckbuilderObject = CollectionDeckbuilderObject()
-                    collectionDeckbuilderObject.addObject(droppedOnDBObject)
-                    collectionDeckbuilderObject.addObject(draggingObject.deckbuilderObject)
+                        val collectionDeckbuilderObject = CollectionDeckbuilderObject()
+                        collectionDeckbuilderObject.addObject(droppedOnDBObject)
+                        collectionDeckbuilderObject.addObject(draggingObject.deckbuilderObject)
 
-                    deckbuilderCollection.addObject(
-                        collectionDeckbuilderObject,
-                        ObjectLocationProperty(
-                            droppedOn.objectLocationProperty.x,
-                            droppedOn.objectLocationProperty.y,
-                            collectionDeckbuilderObject.defaultWidth,
-                            collectionDeckbuilderObject.defaultHeight
+                        deckbuilderCollection.addObject(
+                            collectionDeckbuilderObject,
+                            ObjectLocationProperty(
+                                droppedOn.objectLocationProperty.x,
+                                droppedOn.objectLocationProperty.y,
+                                collectionDeckbuilderObject.defaultWidth,
+                                collectionDeckbuilderObject.defaultHeight
+                            )
                         )
-                    )
+                    }
                 }
             }
             event.consume()

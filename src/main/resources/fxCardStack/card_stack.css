@@ -2,6 +2,8 @@
     -fx-border-width: 10;
     -fx-border-color: #cacaca;
     -fx-border-radius: 10;
+    -fx-background-color: white;
+    -fx-background-radius: 30;
 }
 
 .cardStack > .stackLabel {
