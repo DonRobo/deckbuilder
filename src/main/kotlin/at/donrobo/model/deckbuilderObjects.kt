@@ -6,6 +6,7 @@ import at.donrobo.view.cardSizeRatio
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.geometry.BoundingBox
+import javafx.geometry.Point2D
 import java.io.Serializable
 import java.util.*
 import kotlin.collections.HashMap
@@ -30,12 +31,12 @@ data class ObjectLocationProperty(
         set(value) {
             xProperty.value = value
         }
-
     var y: Double
         get() = yProperty.value
         set(value) {
             yProperty.value = value
         }
+
     var width: Double
         get() = widthProperty.value
         set(value) {
@@ -48,6 +49,7 @@ data class ObjectLocationProperty(
         }
 
     val bounds: BoundingBox get() = BoundingBox(x, y, width, height)
+
 }
 
 sealed class DeckbuilderObject : Serializable {
@@ -107,7 +109,12 @@ class CollectionDeckbuilderObject(
         var xIndex = 0
 
         val locationProperty =
-            ObjectLocationProperty(SimpleDoubleProperty(0.0), SimpleDoubleProperty(0.0), widthProperty, heightProperty)
+            ObjectLocationProperty(
+                SimpleDoubleProperty(0.0),
+                SimpleDoubleProperty(0.0),
+                widthProperty,
+                heightProperty
+            )
         var intersections = getObjectsIntersecting(locationProperty)
         while (intersections.isNotEmpty()) {
             maxYInRow = max(maxYInRow, intersections.map { it.second.bounds.maxY }.max()!!)
@@ -166,6 +173,63 @@ class CollectionDeckbuilderObject(
 
     fun removeObjectRemovedListener(listener: (DeckbuilderObject) -> Unit) {
         objectRemovedListeners -= listener
+    }
+
+    fun objectAt(
+        position: Point2D,
+        except: DeckbuilderObject? = null
+    ): Pair<DeckbuilderObject, ObjectLocationProperty>? {
+        return internalDeckbuilderObjects.filter {
+            it.key != except && it.value.bounds.contains(position)
+        }.maxBy { it.component2().x }?.toPair() //TODO
+    }
+
+    fun dropObject(droppingObj: DeckbuilderObject, location: ObjectLocationProperty, position: Point2D) {
+        val droppedOn = objectAt(position, except = droppingObj)
+        if (droppedOn == null) {
+            if (!internalDeckbuilderObjects.containsKey(droppingObj)) {
+                addObject(droppingObj, location)
+            } else {
+                //do nothing
+            }
+        } else {
+            when (val droppedOnObj = droppedOn.first) {
+                is CollectionDeckbuilderObject -> {
+                    if (droppingObj is CardDeckbuilderObject) {
+                        removeObject(droppingObj)
+                        droppedOnObj.addObject(droppingObj)
+                    } else if (droppingObj is CollectionDeckbuilderObject) {
+                        removeObject(droppingObj)
+                        droppingObj.deckbuilderObjects.keys.forEach {
+                            droppedOnObj.addObject(it)
+                        }
+                    }
+                }
+                is CardDeckbuilderObject -> {
+                    if (droppingObj is CardDeckbuilderObject) {
+                        removeObject(droppingObj)
+                        removeObject(droppedOnObj)
+
+                        val collectionDeckbuilderObject = CollectionDeckbuilderObject()
+                        collectionDeckbuilderObject.addObject(droppingObj)
+                        collectionDeckbuilderObject.addObject(droppedOnObj)
+
+                        addObject(
+                            collectionDeckbuilderObject,
+                            ObjectLocationProperty(
+                                droppedOn.second.x,
+                                droppedOn.second.y,
+                                collectionDeckbuilderObject.defaultWidth,
+                                collectionDeckbuilderObject.defaultHeight
+                            )
+                        )
+                    } else {
+                        //do nothing
+                    }
+                }
+                else -> TODO()
+            }
+        }
     }
 
 }

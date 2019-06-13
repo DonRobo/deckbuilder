@@ -1,6 +1,5 @@
 package at.donrobo.view
 
-import at.donrobo.model.CardDeckbuilderObject
 import at.donrobo.model.CollectionDeckbuilderObject
 import at.donrobo.model.DeckbuilderObject
 import at.donrobo.model.ObjectLocationProperty
@@ -118,7 +117,7 @@ class StackDragAndDropControls(val cardStack: CardStack, val cardObj: Deckbuilde
                         cardObj.defaultWidth,
                         cardObj.defaultHeight
                     )
-                outside.deckbuilderCollection.addObject(cardObj, location)
+                outside.deckbuilderCollection.dropObject(cardObj, location, pointOutside)
             }
         }
     }
@@ -143,12 +142,13 @@ class DragAndDropControls(
     private val pressedListener: EventHandler<in MouseEvent> = EventHandler { event ->
         if (event.button == MouseButton.PRIMARY) {
             val mousePosition = event.mousePosition
-            val target = objectAt(mousePosition)
+            val target = deckbuilderCollection.objectAt(mousePosition)
             if (target != null) {
+                val objNode = deckbuilderObjectNodes.single { it.deckbuilderObject == target.first }
                 mouseStartPoint = mousePosition
-                draggingObjectStartPoint = Point2D(target.objectLocationProperty.x, target.objectLocationProperty.y)
-                draggingObject = target
-                target.node.toFront()
+                draggingObjectStartPoint = Point2D(target.second.x, target.second.y)
+                draggingObject = objNode
+                objNode.node.toFront()
                 event.consume()
             }
         }
@@ -169,51 +169,18 @@ class DragAndDropControls(
     private val releasedListener: EventHandler<in MouseEvent> = EventHandler { event ->
         val draggingObject = this.draggingObject
         if (event.button == MouseButton.PRIMARY && draggingObject != null) {
-            val droppedOn = objectAt(event.mousePosition, except = draggingObject)
+            deckbuilderCollection.dropObject(
+                draggingObject.deckbuilderObject,
+                draggingObject.objectLocationProperty,
+                event.mousePosition
+            )
             mouseStartPoint = null
             this.draggingObject = null
             draggingObjectStartPoint = null
-            when (val droppedOnDBObject = droppedOn?.deckbuilderObject) {
-                is CollectionDeckbuilderObject -> {
-                    if (draggingObject.deckbuilderObject is CardDeckbuilderObject) {
-                        deckbuilderCollection.removeObject(draggingObject.deckbuilderObject)
-                        droppedOnDBObject.addObject(draggingObject.deckbuilderObject)
-                    } else if (draggingObject.deckbuilderObject is CollectionDeckbuilderObject) {
-                        deckbuilderCollection.removeObject(draggingObject.deckbuilderObject)
-                        draggingObject.deckbuilderObject.deckbuilderObjects.keys.forEach {
-                            droppedOnDBObject.addObject(it)
-                        }
-                    }
-                }
-                is CardDeckbuilderObject -> {
-                    if (draggingObject.deckbuilderObject is CardDeckbuilderObject) {
-                        deckbuilderCollection.removeObject(droppedOnDBObject)
-                        deckbuilderCollection.removeObject(draggingObject.deckbuilderObject)
-
-                        val collectionDeckbuilderObject = CollectionDeckbuilderObject()
-                        collectionDeckbuilderObject.addObject(droppedOnDBObject)
-                        collectionDeckbuilderObject.addObject(draggingObject.deckbuilderObject)
-
-                        deckbuilderCollection.addObject(
-                            collectionDeckbuilderObject,
-                            ObjectLocationProperty(
-                                droppedOn.objectLocationProperty.x,
-                                droppedOn.objectLocationProperty.y,
-                                collectionDeckbuilderObject.defaultWidth,
-                                collectionDeckbuilderObject.defaultHeight
-                            )
-                        )
-                    }
-                }
-            }
             event.consume()
         }
     }
 
-    private fun objectAt(mousePosition: Point2D, except: DeckbuilderObjectNode? = null): DeckbuilderObjectNode? {
-        return deckbuilderObjectNodes.filter { it != except && it.objectLocationProperty.bounds.contains(mousePosition) }
-            .maxBy { it.node.parent.childrenUnmodifiable.indexOf(it.node) }
-    }
 
     fun registerEventHandlers() {
         region.addEventHandler(MouseEvent.MOUSE_PRESSED, pressedListener)
