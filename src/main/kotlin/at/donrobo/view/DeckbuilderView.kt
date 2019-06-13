@@ -48,7 +48,7 @@ fun createNodeFor(
             CardPane(deckbuilderObject, objectLocationProperty)
         }
         is CollectionDeckbuilderObject -> {
-            CardStack(deckbuilderObject, objectLocationProperty)
+            CardStack(deckbuilderObject, objectLocationProperty, 100.0)
         }
     }
 }

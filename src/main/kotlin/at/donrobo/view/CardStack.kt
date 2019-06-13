@@ -14,7 +14,8 @@ import java.io.IOException
 
 class CardStack(
     val deckbuilderObject: CollectionDeckbuilderObject,
-    val objectLocationProperty: ObjectLocationProperty
+    val objectLocationProperty: ObjectLocationProperty,
+    val cardWidth: Double
 ) : AnchorPane() {
 
     @FXML
@@ -37,7 +38,7 @@ class CardStack(
     }
 
     private fun addCard(cardObj: DeckbuilderObject) {
-        val location = ObjectLocationProperty(0.0, 0.0, 50.0, 50.0 / cardSizeRatio)
+        val location = ObjectLocationProperty(0.0, 0.0, cardWidth, cardWidth / cardSizeRatio)
         val node = createNodeFor(cardObj, location)
         val dndControls = StackDragAndDropControls(this, cardObj, node)
         dndControls.registerEventHandlers()
