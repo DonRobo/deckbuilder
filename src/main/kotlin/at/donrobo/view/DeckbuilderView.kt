@@ -22,13 +22,13 @@ class DeckbuilderView(val deckbuilderCollection: CollectionDeckbuilderObject) : 
         deckbuilderCollection.addObjectAddedListener { deckbuilderObject: DeckbuilderObject, objectLocationProperty: ObjectLocationProperty ->
             val node = createNodeFor(deckbuilderObject, objectLocationProperty)
             children.add(node)
+            node.viewOrderProperty().bind(objectLocationProperty.zIndexProperty)
             deckbuilderObjectNodes.add(DeckbuilderObjectNode(deckbuilderObject, objectLocationProperty, node))
         }
 
         deckbuilderCollection.addObjectRemovedListener { deckbuilderObject: DeckbuilderObject ->
             val obj = deckbuilderObjectNodes.single { it.deckbuilderObject == deckbuilderObject }
             val node = obj.node
-
             children.remove(node)
             deckbuilderObjectNodes.remove(obj)
         }

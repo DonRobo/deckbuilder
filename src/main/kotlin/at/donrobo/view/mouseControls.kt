@@ -33,7 +33,7 @@ class ResizeControls(val deckbuilderObjectNode: DeckbuilderObjectNode) {
                 deckbuilderObjectNode.objectLocationProperty.height
             )
             mouseStartPoint = mousePosition
-            deckbuilderObjectNode.node.toFront()
+            deckbuilderObjectNode.objectLocationProperty.toFront()
             event.consume()
         }
     }
@@ -84,7 +84,7 @@ class StackDragAndDropControls(val cardStack: CardStack, val cardObj: Deckbuilde
         if (event.button == MouseButton.PRIMARY && startPosition != null) {
             if (draggingNode == null) {
                 node.isVisible = false
-                draggingNode = createNodeFor(cardObj, ObjectLocationProperty(0.0, 0.0, node.width, node.height))
+                draggingNode = createNodeFor(cardObj, ObjectLocationProperty(0.0, 0.0, node.width, node.height, -1))
                 outside.children.add(draggingNode)
             }
             val pointOutside = outside.screenToLocal(
@@ -115,7 +115,8 @@ class StackDragAndDropControls(val cardStack: CardStack, val cardObj: Deckbuilde
                         pointOutside.x - cardObj.defaultWidth / 2.0,
                         pointOutside.y - cardObj.defaultHeight / 2.0,
                         cardObj.defaultWidth,
-                        cardObj.defaultHeight
+                        cardObj.defaultHeight,
+                        -1
                     )
                 outside.deckbuilderCollection.dropObject(cardObj, location, pointOutside)
             }
@@ -148,7 +149,7 @@ class DragAndDropControls(
                 mouseStartPoint = mousePosition
                 draggingObjectStartPoint = Point2D(target.second.x, target.second.y)
                 draggingObject = objNode
-                objNode.node.toFront()
+                objNode.objectLocationProperty.toFront()
                 event.consume()
             }
         }

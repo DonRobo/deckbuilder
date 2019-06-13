@@ -5,6 +5,8 @@ import at.donrobo.view.DeckbuilderObjectNode
 import at.donrobo.view.cardSizeRatio
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.SimpleDoubleProperty
+import javafx.beans.property.SimpleIntegerProperty
+import javafx.beans.value.ChangeListener
 import javafx.geometry.BoundingBox
 import javafx.geometry.Point2D
 import java.io.Serializable
@@ -17,13 +19,19 @@ import kotlin.math.sqrt
 data class ObjectLocationProperty(
     val xProperty: DoubleProperty, val yProperty: DoubleProperty,
     val widthProperty: DoubleProperty,
-    val heightProperty: DoubleProperty
+    val heightProperty: DoubleProperty,
+    val zIndexProperty: SimpleIntegerProperty
 ) {
-    constructor(x: Double, y: Double, width: Double, height: Double) : this(
+    fun toFront() {
+        zIndex = -1
+    }
+
+    constructor(x: Double, y: Double, width: Double, height: Double, zIndex: Int) : this(
         SimpleDoubleProperty(x),
         SimpleDoubleProperty(y),
         SimpleDoubleProperty(width),
-        SimpleDoubleProperty(height)
+        SimpleDoubleProperty(height),
+        SimpleIntegerProperty(zIndex)
     )
 
     var x: Double
@@ -49,6 +57,12 @@ data class ObjectLocationProperty(
         }
 
     val bounds: BoundingBox get() = BoundingBox(x, y, width, height)
+
+    var zIndex: Int
+        get() = zIndexProperty.value
+        set(value) {
+            zIndexProperty.value = value
+        }
 
 }
 
@@ -94,6 +108,12 @@ class CollectionDeckbuilderObject(
     private val objectRemovedListeners: MutableList<(DeckbuilderObject) -> Unit> = LinkedList()
 
     private val internalDeckbuilderObjects: MutableMap<DeckbuilderObject, ObjectLocationProperty> = HashMap()
+    private val zIndexList: MutableList<Pair<DeckbuilderObject, ObjectLocationProperty>> = LinkedList()
+    private var disableZListener = false
+    private val zIndexChangeListener: ChangeListener<in Number> = ChangeListener { observable, oldValue, newValue ->
+        if (!disableZListener)
+            updateZIndices()
+    }
 
     var cardsSideBySide: Int = 5
     var gapSize: Double = 30.0
@@ -113,7 +133,8 @@ class CollectionDeckbuilderObject(
                 SimpleDoubleProperty(0.0),
                 SimpleDoubleProperty(0.0),
                 widthProperty,
-                heightProperty
+                heightProperty,
+                SimpleIntegerProperty(-1)
             )
         var intersections = getObjectsIntersecting(locationProperty)
         while (intersections.isNotEmpty()) {
@@ -142,6 +163,9 @@ class CollectionDeckbuilderObject(
 
     fun addObject(deckbuilderObject: DeckbuilderObject, objectLocationProperty: ObjectLocationProperty) {
         internalDeckbuilderObjects[deckbuilderObject] = objectLocationProperty
+        zIndexList.add(deckbuilderObject to objectLocationProperty)
+        objectLocationProperty.zIndexProperty.addListener(zIndexChangeListener)
+        updateZIndices()
 
         objectAddedListeners.forEach { it(deckbuilderObject, objectLocationProperty) }
     }
@@ -152,6 +176,9 @@ class CollectionDeckbuilderObject(
 
     fun removeObject(deckbuilderObject: DeckbuilderObject): ObjectLocationProperty? {
         val returnValue = internalDeckbuilderObjects.remove(deckbuilderObject)
+        zIndexList.removeIf { it.first == deckbuilderObject }
+        returnValue?.zIndexProperty?.removeListener(zIndexChangeListener)
+        updateZIndices()
 
         if (returnValue != null)
             objectRemovedListeners.forEach { it(deckbuilderObject) }
@@ -181,7 +208,14 @@ class CollectionDeckbuilderObject(
     ): Pair<DeckbuilderObject, ObjectLocationProperty>? {
         return internalDeckbuilderObjects.filter {
             it.key != except && it.value.bounds.contains(position)
-        }.maxBy { it.component2().x }?.toPair() //TODO
+        }.minBy { it.component2().zIndex }?.toPair()
+    }
+
+    private fun updateZIndices() {
+        disableZListener = true
+        zIndexList.sortBy { it.second.zIndex }
+        zIndexList.forEachIndexed { index, pair -> pair.second.zIndex = index }
+        disableZListener = false
     }
 
     fun dropObject(droppingObj: DeckbuilderObject, location: ObjectLocationProperty, position: Point2D) {
@@ -220,7 +254,8 @@ class CollectionDeckbuilderObject(
                                 droppedOn.second.x,
                                 droppedOn.second.y,
                                 collectionDeckbuilderObject.defaultWidth,
-                                collectionDeckbuilderObject.defaultHeight
+                                collectionDeckbuilderObject.defaultHeight,
+                                -1
                             )
                         )
                     } else {

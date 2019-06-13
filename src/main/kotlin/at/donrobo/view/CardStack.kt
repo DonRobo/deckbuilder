@@ -38,7 +38,7 @@ class CardStack(
     }
 
     private fun addCard(cardObj: DeckbuilderObject) {
-        val location = ObjectLocationProperty(0.0, 0.0, cardWidth, cardWidth / cardSizeRatio)
+        val location = ObjectLocationProperty(0.0, 0.0, cardWidth, cardWidth / cardSizeRatio, -1)
         val node = createNodeFor(cardObj, location)
         val dndControls = StackDragAndDropControls(this, cardObj, node)
         dndControls.registerEventHandlers()
