@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import at.donrobo.view.DeckbuilderView?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -18,7 +19,11 @@
         <HBox VBox.vgrow="ALWAYS">
             <children>
                 <TreeView fx:id="tvCollectionList"/>
-                <ScrollPane fx:id="spMainScroller" HBox.hgrow="ALWAYS"/>
+                <ScrollPane fx:id="spMainScroller" HBox.hgrow="ALWAYS">
+                    <content>
+                        <DeckbuilderView fx:id="dvDeckbuilderView"/>
+                    </content>
+                </ScrollPane>
             </children>
         </HBox>
     </children>

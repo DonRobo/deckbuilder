@@ -119,6 +119,10 @@ class StackDragAndDropControls(val cardStack: CardStack, val cardObj: Deckbuilde
                     )
                 outside.deckbuilderCollection.dropObject(cardObj, location, pointOutside)
             }
+
+            if (cardStack.deckbuilderObject.deckbuilderObjects.isEmpty()) {
+                outside.deckbuilderCollection.removeObject(cardStack.deckbuilderObject)
+            }
         }
     }
 
