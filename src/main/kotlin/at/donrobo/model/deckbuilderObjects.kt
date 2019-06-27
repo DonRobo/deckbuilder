@@ -99,7 +99,7 @@ class CollectionDeckbuilderObject(
     private val internalDeckbuilderObjects: MutableMap<DeckbuilderObject, ObjectLocationProperty> = HashMap()
     private val zIndexList: MutableList<Pair<DeckbuilderObject, ObjectLocationProperty>> = LinkedList()
     private var disableZListener = false
-    private val zIndexChangeListener: ChangeListener<in Number> = ChangeListener { observable, oldValue, newValue ->
+    private val zIndexChangeListener: ChangeListener<in Number> = ChangeListener { _, _, _ ->
         if (!disableZListener)
             updateZIndices()
     }
