@@ -24,7 +24,7 @@ import java.io.IOException
 import java.net.URL
 import java.util.concurrent.Executors
 
-private val executor = Executors.newSingleThreadExecutor { r: Runnable -> Thread(r).apply { isDaemon = true } }
+private val executor = Executors.newFixedThreadPool(10) { r: Runnable -> Thread(r).apply { isDaemon = true } }
 
 const val cardSizeRatio = 63.0 / 88.0
 

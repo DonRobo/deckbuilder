@@ -28,6 +28,7 @@ fun symbol(cost: Cost): Node {
         is PhyrexianCost -> genericCost("P")
         is ChaosCost -> genericCost("C")
         is UntapCost -> genericCost("U")
+        is SnowCost -> genericCost("S")
         else -> TODO("Show $cost")
     }
 }

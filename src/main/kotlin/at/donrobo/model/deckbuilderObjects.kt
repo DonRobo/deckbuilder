@@ -1,7 +1,6 @@
 package at.donrobo.model
 
 import at.donrobo.mtg.MagicCard
-import at.donrobo.view.DeckbuilderObjectNode
 import at.donrobo.view.cardSizeRatio
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.SimpleDoubleProperty
@@ -12,9 +11,7 @@ import javafx.geometry.Point2D
 import java.io.Serializable
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.math.ceil
 import kotlin.math.max
-import kotlin.math.sqrt
 
 data class ObjectLocationProperty(
     val xProperty: DoubleProperty, val yProperty: DoubleProperty,
@@ -96,14 +93,6 @@ class CollectionDeckbuilderObject(
     override val defaultWidth: Double = 300.0,
     override val defaultHeight: Double = defaultWidth / cardSizeRatio
 ) : DeckbuilderObject() {
-    constructor(
-        initialObjects: List<DeckbuilderObjectNode>,
-        cardsSideBySide: Int = max(5, ceil(sqrt(initialObjects.size.toDouble())).toInt())
-    ) : this() {
-        this.cardsSideBySide = cardsSideBySide
-        initialObjects.forEach { addObject(it) }
-    }
-
     private val objectAddedListeners: MutableList<(DeckbuilderObject, ObjectLocationProperty) -> Unit> = LinkedList()
     private val objectRemovedListeners: MutableList<(DeckbuilderObject) -> Unit> = LinkedList()
 
@@ -170,10 +159,6 @@ class CollectionDeckbuilderObject(
         updateZIndices()
 
         objectAddedListeners.forEach { it(deckbuilderObject, objectLocationProperty) }
-    }
-
-    fun addObject(deckbuilderObjectNode: DeckbuilderObjectNode) {
-        addObject(deckbuilderObjectNode.deckbuilderObject, deckbuilderObjectNode.objectLocationProperty)
     }
 
     fun removeObject(deckbuilderObject: DeckbuilderObject): ObjectLocationProperty? {

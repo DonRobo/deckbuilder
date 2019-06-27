@@ -71,7 +71,7 @@ class CardStack(
         deckbuilderObject.deckbuilderObjects.keys.forEach { addCard(it) }
         updateTitle()
 
-        ResizeControls(DeckbuilderObjectNode(deckbuilderObject, objectLocationProperty, this)).registerEventHandlers()
+        ResizeControls(this, objectLocationProperty).registerEventHandlers()
     }
 
     init {

@@ -1,6 +1,5 @@
 package at.donrobo.view
 
-import at.donrobo.model.CollectionDeckbuilderObject
 import at.donrobo.model.DeckbuilderObject
 import at.donrobo.model.ObjectLocationProperty
 import javafx.event.EventHandler
@@ -14,7 +13,7 @@ private val MouseEvent.mousePosition: Point2D
 private val MouseEvent.sceneMousePosition: Point2D
     get() = Point2D(this.sceneX, this.sceneY)
 
-class ResizeControls(val deckbuilderObjectNode: DeckbuilderObjectNode) {
+class ResizeControls(val node: Region, val locationProperty: ObjectLocationProperty) {
 
     private var resizeStartSize: Point2D? = null
     private var mouseStartPoint: Point2D? = null
@@ -23,17 +22,17 @@ class ResizeControls(val deckbuilderObjectNode: DeckbuilderObjectNode) {
         val mousePosition = event.mousePosition
         val distanceFromCorner = mousePosition.distance(
             Point2D(
-                deckbuilderObjectNode.objectLocationProperty.width,
-                deckbuilderObjectNode.objectLocationProperty.height
+                locationProperty.width,
+                locationProperty.height
             )
         )
         if (event.button == MouseButton.PRIMARY && distanceFromCorner < 20.0) {
             resizeStartSize = Point2D(
-                deckbuilderObjectNode.objectLocationProperty.width,
-                deckbuilderObjectNode.objectLocationProperty.height
+                locationProperty.width,
+                locationProperty.height
             )
             mouseStartPoint = mousePosition
-            deckbuilderObjectNode.objectLocationProperty.toFront()
+            locationProperty.toFront()
             event.consume()
         }
     }
@@ -43,10 +42,10 @@ class ResizeControls(val deckbuilderObjectNode: DeckbuilderObjectNode) {
             val mouseStartPoint = this.mouseStartPoint ?: return@EventHandler
             val resizeStartSize = this.resizeStartSize ?: return@EventHandler
 
-            if (!deckbuilderObjectNode.objectLocationProperty.widthProperty.isBound)
-                deckbuilderObjectNode.objectLocationProperty.width = resizeStartSize.x + (event.x - mouseStartPoint.x)
-            if (!deckbuilderObjectNode.objectLocationProperty.heightProperty.isBound)
-                deckbuilderObjectNode.objectLocationProperty.height = resizeStartSize.y + (event.y - mouseStartPoint.y)
+            if (!locationProperty.widthProperty.isBound)
+                locationProperty.width = resizeStartSize.x + (event.x - mouseStartPoint.x)
+            if (!locationProperty.heightProperty.isBound)
+                locationProperty.height = resizeStartSize.y + (event.y - mouseStartPoint.y)
             event.consume()
         }
     }
@@ -60,9 +59,9 @@ class ResizeControls(val deckbuilderObjectNode: DeckbuilderObjectNode) {
     }
 
     fun registerEventHandlers() {
-        deckbuilderObjectNode.node.addEventHandler(MouseEvent.MOUSE_PRESSED, pressedListener)
-        deckbuilderObjectNode.node.addEventHandler(MouseEvent.MOUSE_DRAGGED, draggedListener)
-        deckbuilderObjectNode.node.addEventHandler(MouseEvent.MOUSE_RELEASED, releasedListener)
+        node.addEventHandler(MouseEvent.MOUSE_PRESSED, pressedListener)
+        node.addEventHandler(MouseEvent.MOUSE_DRAGGED, draggedListener)
+        node.addEventHandler(MouseEvent.MOUSE_RELEASED, releasedListener)
     }
 }
 
@@ -132,24 +131,22 @@ class StackDragAndDropControls(val cardStack: CardStack, val cardObj: Deckbuilde
 }
 
 class DragAndDropControls(
-    val region: Region,
-    val deckbuilderObjectNodes: List<DeckbuilderObjectNode>,
-    deckbuilderCollection: CollectionDeckbuilderObject
+    val deckbuilderView: DeckbuilderView
 ) {
+    private val deckbuilderCollection get() = deckbuilderView.deckbuilderCollection
     private var mouseStartPoint: Point2D? = null
     private var draggingObjectStartPoint: Point2D? = null
-    private var draggingObject: DeckbuilderObjectNode? = null
+    private var draggingObject: Pair<DeckbuilderObject, ObjectLocationProperty>? = null
 
     private val pressedListener: EventHandler<in MouseEvent> = EventHandler { event ->
         if (event.button == MouseButton.PRIMARY) {
             val mousePosition = event.mousePosition
             val target = deckbuilderCollection.objectAt(mousePosition)
             if (target != null) {
-                val objNode = deckbuilderObjectNodes.single { it.deckbuilderObject == target.first }
                 mouseStartPoint = mousePosition
                 draggingObjectStartPoint = Point2D(target.second.x, target.second.y)
-                draggingObject = objNode
-                objNode.objectLocationProperty.toFront()
+                draggingObject = target
+                target.second.toFront()
                 event.consume()
             }
         }
@@ -161,8 +158,8 @@ class DragAndDropControls(
             val draggingObjectStartPoint = this.draggingObjectStartPoint ?: return@EventHandler
             val draggingObjectPosition = this.draggingObject ?: return@EventHandler
 
-            draggingObjectPosition.objectLocationProperty.x = (event.x - mouseStartPoint.x) + draggingObjectStartPoint.x
-            draggingObjectPosition.objectLocationProperty.y = (event.y - mouseStartPoint.y) + draggingObjectStartPoint.y
+            draggingObjectPosition.second.x = (event.x - mouseStartPoint.x) + draggingObjectStartPoint.x
+            draggingObjectPosition.second.y = (event.y - mouseStartPoint.y) + draggingObjectStartPoint.y
             event.consume()
         }
     }
@@ -171,8 +168,8 @@ class DragAndDropControls(
         val draggingObject = this.draggingObject
         if (event.button == MouseButton.PRIMARY && draggingObject != null) {
             deckbuilderCollection.dropObject(
-                draggingObject.deckbuilderObject,
-                draggingObject.objectLocationProperty,
+                draggingObject.first,
+                draggingObject.second,
                 event.mousePosition
             )
             mouseStartPoint = null
@@ -184,9 +181,9 @@ class DragAndDropControls(
 
 
     fun registerEventHandlers() {
-        region.addEventHandler(MouseEvent.MOUSE_PRESSED, pressedListener)
-        region.addEventHandler(MouseEvent.MOUSE_DRAGGED, draggedListener)
-        region.addEventHandler(MouseEvent.MOUSE_RELEASED, releasedListener)
+        deckbuilderView.addEventHandler(MouseEvent.MOUSE_PRESSED, pressedListener)
+        deckbuilderView.addEventHandler(MouseEvent.MOUSE_DRAGGED, draggedListener)
+        deckbuilderView.addEventHandler(MouseEvent.MOUSE_RELEASED, releasedListener)
     }
 
 }

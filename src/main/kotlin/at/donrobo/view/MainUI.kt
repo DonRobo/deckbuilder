@@ -4,9 +4,9 @@ import at.donrobo.model.CollectionDeckbuilderObject
 import at.donrobo.model.createCardObject
 import at.donrobo.mtg.CardLoader
 import javafx.beans.property.SimpleObjectProperty
-import javafx.beans.value.ChangeListener
 import javafx.fxml.FXML
 import javafx.scene.control.ScrollPane
+import javafx.scene.control.SelectionMode
 import javafx.scene.control.TreeItem
 import javafx.scene.control.TreeView
 import javafx.scene.layout.VBox
@@ -19,11 +19,13 @@ data class CollectionListViewObject(val collectionDeckbuilderObject: CollectionD
 
 class MainUI {
 
-    private val rootDeckbuilderViewProperty = SimpleObjectProperty(DeckbuilderView(CollectionDeckbuilderObject()))
-    private var rootDeckbuilderView
-        get() = rootDeckbuilderViewProperty.get()
+    private val deckbuilderView = DeckbuilderView()
+
+    private val viewedCollectionProperty = SimpleObjectProperty(CollectionDeckbuilderObject())
+    private var viewedCollection
+        get() = viewedCollectionProperty.get()
         set(value) {
-            rootDeckbuilderViewProperty.set(value)
+            viewedCollectionProperty.set(value)
         }
 
     @FXML
@@ -41,12 +43,17 @@ class MainUI {
 
     @FXML
     fun initialize() {
-        val listener: ChangeListener<DeckbuilderView> = ChangeListener { _, _, newValue ->
-            spMainScroller.content = newValue
-            addToTreeView(null, newValue.deckbuilderCollection)
+        spMainScroller.content = deckbuilderView
+        addToTreeView(null, deckbuilderView.deckbuilderCollection)
+
+        viewedCollectionProperty.addListener { _, _, newValue ->
+            deckbuilderView.deckbuilderCollection = newValue
         }
-        rootDeckbuilderViewProperty.addListener(listener)
-        listener.changed(null, null, rootDeckbuilderView)
+        tvCollectionList.selectionModel.selectionMode = SelectionMode.SINGLE
+        tvCollectionList.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
+            viewedCollection = newValue.value.collectionDeckbuilderObject
+        }
+
         addRandomCards()
     }
 
@@ -74,7 +81,7 @@ class MainUI {
     private fun addRandomCards(count: Int = 30) {
         val cardLoader = CardLoader()
         repeat(count) {
-            rootDeckbuilderView.deckbuilderCollection.addObject(cardLoader.randomCard().createCardObject())
+            deckbuilderView.deckbuilderCollection.addObject(cardLoader.randomCard().createCardObject())
         }
     }
 }
