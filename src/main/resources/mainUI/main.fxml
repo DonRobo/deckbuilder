@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<VBox fx:id="vbMain" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="at.donrobo.view.MainUI">
+<VBox fx:id="vbMain" prefHeight="413.0" prefWidth="588.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.donrobo.view.MainUI">
     <children>
         <MenuBar>
             <menus>
@@ -18,10 +15,11 @@
                 </Menu>
             </menus>
         </MenuBar>
-        <ScrollPane VBox.vgrow="ALWAYS" fx:id="spMainScroller">
-            <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0"/>
-            </content>
-        </ScrollPane>
+        <HBox VBox.vgrow="ALWAYS">
+            <children>
+                <TreeView fx:id="tvCollectionList"/>
+                <ScrollPane fx:id="spMainScroller" HBox.hgrow="ALWAYS"/>
+            </children>
+        </HBox>
     </children>
 </VBox>

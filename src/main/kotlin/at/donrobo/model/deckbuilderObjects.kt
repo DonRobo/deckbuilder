@@ -120,6 +120,8 @@ class CollectionDeckbuilderObject(
 
     val deckbuilderObjects: Map<DeckbuilderObject, ObjectLocationProperty> get() = internalDeckbuilderObjects
 
+    val name: String = "Collection"
+
     fun addObject(
         deckbuilderObject: DeckbuilderObject,
         widthProperty: DoubleProperty = SimpleDoubleProperty(deckbuilderObject.defaultWidth),
@@ -268,3 +270,5 @@ class CollectionDeckbuilderObject(
     }
 
 }
+
+fun MagicCard.createCardObject(): CardDeckbuilderObject = CardDeckbuilderObject(this)
