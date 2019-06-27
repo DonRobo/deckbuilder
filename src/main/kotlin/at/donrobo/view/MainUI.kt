@@ -6,10 +6,7 @@ import at.donrobo.mtg.CardLoader
 import javafx.beans.property.SimpleObjectProperty
 import javafx.event.EventHandler
 import javafx.fxml.FXML
-import javafx.scene.control.ScrollPane
-import javafx.scene.control.SelectionMode
-import javafx.scene.control.TreeItem
-import javafx.scene.control.TreeView
+import javafx.scene.control.*
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
@@ -40,12 +37,16 @@ class MainUI {
     @FXML
     lateinit var dvDeckbuilderView: DeckbuilderView
 
+    private val contextMenu = ContextMenu()
+
     fun close() {
         (vbMain.scene.window as Stage).close()
     }
 
     @FXML
     fun initialize() {
+        contextMenu.items.add(MenuItem("Do shit").apply { onAction = EventHandler { println("Doing shit!") } })
+
         addToTreeView(null, dvDeckbuilderView.deckbuilderCollection)
 
         viewedCollectionProperty.addListener { _, _, newValue ->
@@ -54,6 +55,15 @@ class MainUI {
         tvCollectionList.selectionModel.selectionMode = SelectionMode.SINGLE
         tvCollectionList.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
             viewedCollection = newValue.value.collectionDeckbuilderObject
+        }
+
+        dvDeckbuilderView.onMousePressed = EventHandler { event ->
+            if (event.button == MouseButton.SECONDARY) {
+                contextMenu.show(dvDeckbuilderView, event.screenX, event.screenY)
+                event.consume()
+            } else {
+                contextMenu.hide()
+            }
         }
 
         addRandomCards()

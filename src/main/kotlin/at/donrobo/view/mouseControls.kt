@@ -4,6 +4,7 @@ import at.donrobo.model.DeckbuilderObject
 import at.donrobo.model.ObjectLocationProperty
 import javafx.event.EventHandler
 import javafx.geometry.Point2D
+import javafx.scene.Node
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Region
@@ -69,7 +70,14 @@ class StackDragAndDropControls(val cardStack: CardStack, val cardObj: Deckbuilde
     private var startPosition: Point2D? = null
     private var draggingNode: Region? = null
 
-    private val outside: DeckbuilderView get() = cardStack.parent as DeckbuilderView
+    private val outside: DeckbuilderView
+        get() {
+            var current: Node? = cardStack
+            while (current != null && current !is DeckbuilderView) {
+                current = current.parent
+            }
+            return (current as DeckbuilderView?) ?: throw RuntimeException("Outside doesn't exist :(")
+        }
 
     private val pressedListener: EventHandler<in MouseEvent> = EventHandler { event ->
         if (event.button == MouseButton.PRIMARY) {
