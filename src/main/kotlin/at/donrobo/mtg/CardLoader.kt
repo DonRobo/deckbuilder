@@ -108,6 +108,10 @@ class CardLoader(
 
         return allCards[Random.nextInt(allCards.size)]
     }
+
+    companion object {
+        val instance = CardLoader()
+    }
 }
 
 fun manaSymbolToCost(value: String): Cost {

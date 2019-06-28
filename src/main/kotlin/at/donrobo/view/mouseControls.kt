@@ -9,7 +9,7 @@ import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Region
 
-private val MouseEvent.mousePosition: Point2D
+val MouseEvent.mousePosition: Point2D
     get() = Point2D(this.x, this.y)
 private val MouseEvent.sceneMousePosition: Point2D
     get() = Point2D(this.sceneX, this.sceneY)

@@ -45,8 +45,6 @@ class MainUI {
 
     @FXML
     fun initialize() {
-        contextMenu.items.add(MenuItem("Do shit").apply { onAction = EventHandler { println("Doing shit!") } })
-
         addToTreeView(null, dvDeckbuilderView.deckbuilderCollection)
 
         viewedCollectionProperty.addListener { _, _, newValue ->
@@ -59,8 +57,17 @@ class MainUI {
 
         dvDeckbuilderView.onMousePressed = EventHandler { event ->
             if (event.button == MouseButton.SECONDARY) {
-                contextMenu.show(dvDeckbuilderView, event.screenX, event.screenY)
-                event.consume()
+                contextMenu.items.clear()
+                dvDeckbuilderView.deckbuilderCollection.actionsFor(event.mousePosition)
+                    .forEach { (actionName, actionFunction) ->
+                        contextMenu.items.add(MenuItem(actionName).apply {
+                            onAction = EventHandler { actionFunction() }
+                        })
+                    }
+                if (contextMenu.items.isNotEmpty()) {
+                    contextMenu.show(dvDeckbuilderView, event.screenX, event.screenY)
+                    event.consume()
+                }
             } else {
                 contextMenu.hide()
             }
@@ -92,9 +99,8 @@ class MainUI {
     }
 
     private fun addRandomCards(count: Int = 30) {
-        val cardLoader = CardLoader()
         repeat(count) {
-            dvDeckbuilderView.deckbuilderCollection.addObject(cardLoader.randomCard().createCardObject())
+            dvDeckbuilderView.deckbuilderCollection.addObject(CardLoader.instance.randomCard().createCardObject())
         }
     }
 }

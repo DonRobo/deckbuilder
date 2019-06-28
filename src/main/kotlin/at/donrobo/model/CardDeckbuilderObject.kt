@@ -3,7 +3,7 @@ package at.donrobo.model
 import at.donrobo.mtg.MagicCard
 import at.donrobo.view.cardSizeRatio
 
-data class CardDeckbuilderObject(
+class CardDeckbuilderObject(
     val card: MagicCard,
     override val defaultWidth: Double = 250.0,
     override val defaultHeight: Double = defaultWidth / cardSizeRatio

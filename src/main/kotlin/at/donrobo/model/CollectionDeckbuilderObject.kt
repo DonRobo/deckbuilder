@@ -1,5 +1,6 @@
 package at.donrobo.model
 
+import at.donrobo.mtg.CardLoader
 import at.donrobo.view.cardSizeRatio
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.SimpleDoubleProperty
@@ -82,6 +83,10 @@ class CollectionDeckbuilderObject(
         deckbuilderObjects.filter { it.value.bounds.contains(x, y) }.map { it.toPair() }
 
     fun addObject(deckbuilderObject: DeckbuilderObject, objectLocationProperty: ObjectLocationProperty) {
+        if (internalDeckbuilderObjects.containsKey(deckbuilderObject)) {
+            throw IllegalArgumentException("Adding object that's already in this collection")
+        }
+
         internalDeckbuilderObjects[deckbuilderObject] = objectLocationProperty
         zIndexList.add(deckbuilderObject to objectLocationProperty)
         objectLocationProperty.zIndexProperty.addListener(zIndexChangeListener)
@@ -181,6 +186,35 @@ class CollectionDeckbuilderObject(
                 else -> throw RuntimeException("Not implemented: $droppedOnObj")
             }
         }
+    }
+
+    fun actionsFor(position: Point2D): List<Pair<String, () -> Unit>> {
+        val objectClicked = objectAt(position)
+
+        return when (val deckbuilderObject = objectClicked?.first) {
+            null -> {
+                listOf(
+                    "Add random card" to { addObject(CardLoader.instance.randomCard().createCardObject()) }
+                )
+            }
+            is CardDeckbuilderObject -> {
+                listOf(
+                    Pair<String, () -> Unit>("Remove", { removeObject(deckbuilderObject) }),
+                    Pair<String, () -> Unit>("Duplicate", {
+                        addObject(deckbuilderObject.card.createCardObject())
+                    })
+                )
+            }
+            else -> emptyList()
+        }
+//        else if (objectClicked.first is CardDeckbuilderObject) {
+//            return listOf(
+//                "Remove" to { removeObject(objectClicked.first) },
+//                "Duplicate" to {addObject(objectClicked.first.card.createCardObject())}
+//            )
+//        } else {
+//            return emptyList()
+//        }
     }
 
 }
