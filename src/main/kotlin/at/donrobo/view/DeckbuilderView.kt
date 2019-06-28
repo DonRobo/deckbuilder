@@ -79,6 +79,7 @@ fun createNodeFor(
         is CollectionDeckbuilderObject -> {
             CardStack(deckbuilderObject, objectLocationProperty, 100.0)
         }
+        else -> throw RuntimeException("Not implemented: $deckbuilderObject")
     }
 }
 

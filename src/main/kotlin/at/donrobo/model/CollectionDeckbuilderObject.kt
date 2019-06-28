@@ -1,103 +1,28 @@
 package at.donrobo.model
 
-import at.donrobo.mtg.MagicCard
 import at.donrobo.view.cardSizeRatio
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.value.ChangeListener
-import javafx.geometry.BoundingBox
 import javafx.geometry.Point2D
-import java.io.Serializable
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.max
-
-data class ObjectLocationProperty(
-    val xProperty: DoubleProperty, val yProperty: DoubleProperty,
-    val widthProperty: DoubleProperty,
-    val heightProperty: DoubleProperty,
-    val zIndexProperty: SimpleIntegerProperty
-) {
-    fun toFront() {
-        zIndex = -1
-    }
-
-    constructor(x: Double, y: Double, width: Double, height: Double, zIndex: Int) : this(
-        SimpleDoubleProperty(x),
-        SimpleDoubleProperty(y),
-        SimpleDoubleProperty(width),
-        SimpleDoubleProperty(height),
-        SimpleIntegerProperty(zIndex)
-    )
-
-    var x: Double
-        get() = xProperty.value
-        set(value) {
-            xProperty.value = value
-        }
-    var y: Double
-        get() = yProperty.value
-        set(value) {
-            yProperty.value = value
-        }
-
-    var width: Double
-        get() = widthProperty.value
-        set(value) {
-            widthProperty.value = value
-        }
-    var height: Double
-        get() = heightProperty.value
-        set(value) {
-            heightProperty.value = value
-        }
-
-    val bounds: BoundingBox get() = BoundingBox(x, y, width, height)
-
-    var zIndex: Int
-        get() = zIndexProperty.value
-        set(value) {
-            zIndexProperty.value = value
-        }
-
-}
-
-sealed class DeckbuilderObject : Serializable {
-    val uuid: UUID = UUID.randomUUID()
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is DeckbuilderObject) return false
-
-        if (uuid != other.uuid) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return uuid.hashCode()
-    }
-
-    abstract val defaultWidth: Double
-    abstract val defaultHeight: Double
-}
-
-data class CardDeckbuilderObject(
-    val card: MagicCard,
-    override val defaultWidth: Double = 250.0,
-    override val defaultHeight: Double = defaultWidth / cardSizeRatio
-) : DeckbuilderObject()
 
 class CollectionDeckbuilderObject(
     override val defaultWidth: Double = 300.0,
     override val defaultHeight: Double = defaultWidth / cardSizeRatio
 ) : DeckbuilderObject() {
-    private val objectAddedListeners: MutableList<(DeckbuilderObject, ObjectLocationProperty) -> Unit> = LinkedList()
-    private val objectRemovedListeners: MutableList<(DeckbuilderObject) -> Unit> = LinkedList()
+    private val objectAddedListeners: MutableList<(DeckbuilderObject, ObjectLocationProperty) -> Unit> =
+        LinkedList()
+    private val objectRemovedListeners: MutableList<(DeckbuilderObject) -> Unit> =
+        LinkedList()
 
-    private val internalDeckbuilderObjects: MutableMap<DeckbuilderObject, ObjectLocationProperty> = HashMap()
-    private val zIndexList: MutableList<Pair<DeckbuilderObject, ObjectLocationProperty>> = LinkedList()
+    private val internalDeckbuilderObjects: MutableMap<DeckbuilderObject, ObjectLocationProperty> =
+        HashMap()
+    private val zIndexList: MutableList<Pair<DeckbuilderObject, ObjectLocationProperty>> =
+        LinkedList()
     private var disableZListener = false
     private val zIndexChangeListener: ChangeListener<in Number> = ChangeListener { _, _, _ ->
         if (!disableZListener)
@@ -113,8 +38,12 @@ class CollectionDeckbuilderObject(
 
     fun addObject(
         deckbuilderObject: DeckbuilderObject,
-        widthProperty: DoubleProperty = SimpleDoubleProperty(deckbuilderObject.defaultWidth),
-        heightProperty: DoubleProperty = SimpleDoubleProperty(deckbuilderObject.defaultHeight)
+        widthProperty: DoubleProperty = SimpleDoubleProperty(
+            deckbuilderObject.defaultWidth
+        ),
+        heightProperty: DoubleProperty = SimpleDoubleProperty(
+            deckbuilderObject.defaultHeight
+        )
     ) {
         var maxYInRow = 0.0
         var xIndex = 0
@@ -249,11 +178,9 @@ class CollectionDeckbuilderObject(
                         //do nothing
                     }
                 }
-                else -> TODO()
+                else -> throw RuntimeException("Not implemented: $droppedOnObj")
             }
         }
     }
 
 }
-
-fun MagicCard.createCardObject(): CardDeckbuilderObject = CardDeckbuilderObject(this)
